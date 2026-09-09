@@ -780,6 +780,10 @@
         <p class="font-extrabold uppercase tracking-wider text-cyan-700">Demo doctor account</p>
         <p class="mt-1">Staff ID: <strong>DR-DEMO-001</strong> &nbsp;•&nbsp; Password: <strong>Aster@123</strong></p>
       </div>
+      <div id="patient-demo-credentials" class="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-[11px] text-emerald-900">
+        <p class="font-extrabold uppercase tracking-wider text-emerald-700">Demo patient account</p>
+        <p class="mt-1">Mobile: <strong>9876543210</strong> &nbsp;•&nbsp; Password: <strong>Aster@123</strong></p>
+      </div>
       <form id="login-form" class="mt-6 space-y-4">
         <div>
           <label id="login-identifier-label" for="login-identifier" class="block text-xs font-bold text-slate-700 mb-1.5">Mobile number</label>
@@ -1808,9 +1812,14 @@
       const loginForm = document.getElementById('login-form');
       const loginStatus = document.getElementById('login-status');
       const doctorDemoCredentials = document.getElementById('doctor-demo-credentials');
+      const patientDemoCredentials = document.getElementById('patient-demo-credentials');
       let loginRole = 'patient';
       const demoDoctorAccount = {
         staffId: 'DR-DEMO-001',
+        password: 'Aster@123'
+      };
+      const demoPatientAccount = {
+        mobile: '9876543210',
         password: 'Aster@123'
       };
 
@@ -2110,6 +2119,7 @@
           }
           if (loginIdentifierLabel) loginIdentifierLabel.textContent = isDoctor ? 'Staff ID' : 'Mobile number';
           doctorDemoCredentials?.classList.toggle('hidden', !isDoctor);
+          patientDemoCredentials?.classList.toggle('hidden', isDoctor);
           if (loginStatus) loginStatus.classList.add('hidden');
         });
       });
@@ -2121,16 +2131,23 @@
           const isDemoDoctor = loginRole === 'doctor'
             && loginIdentifier?.value.trim().toUpperCase() === demoDoctorAccount.staffId
             && password === demoDoctorAccount.password;
+          const isPatientLogin = loginRole === 'patient'
+            && loginIdentifier?.value.trim() === demoPatientAccount.mobile
+            && password === demoPatientAccount.password;
           loginStatus.textContent = isDemoDoctor
             ? 'Demo doctor login successful. Welcome to the doctor portal.'
             : loginRole === 'doctor'
               ? 'Demo login not recognized. Use the credentials shown above.'
-              : 'Patient sign-in service will connect you to the secure portal.';
-          loginStatus.classList.toggle('text-rose-600', !isDemoDoctor && loginRole === 'doctor');
-          loginStatus.classList.toggle('text-brand-teal', isDemoDoctor || loginRole === 'patient');
+              : isPatientLogin
+                ? 'Patient login successful. Opening your health dashboard.'
+                : 'Demo login not recognized. Use the patient credentials shown above.';
+          loginStatus.classList.toggle('text-rose-600', (!isDemoDoctor && loginRole === 'doctor') || (!isPatientLogin && loginRole === 'patient'));
+          loginStatus.classList.toggle('text-brand-teal', isDemoDoctor || isPatientLogin);
           loginStatus.classList.remove('hidden');
           if (isDemoDoctor) {
             window.location.href = 'docdash.html';
+          } else if (isPatientLogin) {
+            window.location.href = 'patientdash.html';
           }
         }
       });

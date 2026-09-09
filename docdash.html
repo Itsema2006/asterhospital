@@ -785,4 +785,22 @@
     const activeTab = document.querySelector('#opdTabGroup button');
     activeTab?.setAttribute('aria-pressed', 'true');
   })();
+</script>
+<script>
+  (() => {
+    const header = document.querySelector('header');
+    if (!header || document.getElementById('doctor-logout')) return;
+    const button = document.createElement('button');
+    button.id = 'doctor-logout';
+    button.type = 'button';
+    button.className = 'flex items-center gap-space-xxs rounded-lg border border-red-200 bg-red-50 px-space-sm py-space-xs font-label-md text-label-md text-red-700 transition hover:bg-red-100';
+    button.innerHTML = '<span class="material-symbols-outlined text-[17px]">logout</span><span class="hidden sm:inline">Logout</span>';
+    button.setAttribute('aria-label', 'Log out of doctor portal');
+    button.title = 'Log out';
+    button.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+    const profile = header.querySelector('img[alt="Profile"]');
+    (profile?.parentElement || header.lastElementChild)?.append(button);
+  })();
 </script></main></div></body></html>
