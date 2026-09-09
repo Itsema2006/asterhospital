@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Prescription | Aster Aadhar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{font-family:Inter,Arial,sans-serif}.toast{animation:toast .25s ease-out}@keyframes toast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}</style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <header class="border-b border-slate-200 bg-white px-5 py-4">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4">
+      <div><p class="text-sm font-extrabold text-[#00234d]">ASTER AADHAR</p><p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Doctor E-Prescription</p></div>
+      <a href="appointments.html" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-[#00234d]">Back to Appointments</a>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl space-y-5 px-5 py-6">
+    <section class="rounded-2xl bg-[#00234d] p-6 text-white shadow-lg">
+      <p class="text-xs font-bold uppercase tracking-widest text-cyan-200">Finish consultation</p>
+      <h1 class="mt-2 text-2xl font-extrabold">Write E-Prescription</h1>
+      <p class="mt-2 text-sm text-blue-100">Complete and sign the prescription for the current patient.</p>
+    </section>
+    <div class="grid gap-5 lg:grid-cols-[1.3fr_.7fr]">
+      <form id="prescription-form" class="rounded-2xl bg-white p-6 shadow-sm">
+        <div class="border-b border-slate-100 pb-4"><h2 class="text-lg font-bold text-[#00234d]">Mrs. Meera Mandhare</h2><p class="mt-1 text-xs text-slate-500">MRN-AAH-2023-1108 • 58y / F • Post-PTCA Day 45 review</p></div>
+        <div class="mt-5 grid gap-4 md:grid-cols-2">
+          <label class="text-xs font-bold">Diagnosis<textarea class="mt-2 h-28 w-full rounded-lg border-slate-200 bg-slate-50 p-3 text-xs" required>Stable post-PTCA follow-up; exertional fatigue.</textarea></label>
+          <label class="text-xs font-bold">Patient instructions<textarea class="mt-2 h-28 w-full rounded-lg border-slate-200 bg-slate-50 p-3 text-xs" required>Continue cardiac rehabilitation and return for review in 4 weeks.</textarea></label>
+        </div>
+        <div class="mt-6 flex items-center justify-between"><h2 class="text-sm font-bold text-[#00234d]">Medicines</h2><button id="add-medicine" type="button" class="rounded-lg bg-cyan-50 px-3 py-2 text-xs font-bold text-[#006876]">+ Add medicine</button></div>
+        <div id="medicine-list" class="mt-3 space-y-2"></div>
+        <div class="mt-6 flex flex-wrap justify-end gap-2 border-t border-slate-100 pt-4"><button id="print" type="button" class="rounded-lg bg-slate-100 px-4 py-2.5 text-xs font-bold text-[#00234d]">Print preview</button><button class="rounded-lg bg-[#009A84] px-4 py-2.5 text-xs font-bold text-white" type="submit">Save & Sign Prescription</button></div>
+        <p id="status" class="mt-3 hidden text-right text-xs font-bold text-emerald-700"></p>
+      </form>
+      <aside class="rounded-2xl bg-white p-6 shadow-sm">
+        <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#006876]">Patient history</p><h2 class="mt-1 text-lg font-bold text-[#00234d]">Previous prescriptions</h2>
+        <div class="mt-4 space-y-3">
+          <article class="rounded-xl bg-slate-50 p-4"><div class="flex justify-between text-xs font-bold"><span>12 Aug 2026</span><span class="text-slate-400">Dr. Patil</span></div><p class="mt-2 text-xs font-semibold">Post-PTCA follow-up</p><p class="mt-1 text-[11px] text-slate-500">Aspirin 75 mg • Atorvastatin 40 mg • Clopidogrel 75 mg</p><button class="use-history mt-3 rounded-lg bg-cyan-50 px-3 py-1.5 text-[10px] font-bold text-[#006876]" type="button" data-medicines="Aspirin 75 mg|1 tablet|Once daily|30 days;Atorvastatin 40 mg|1 tablet|Once daily|30 days;Clopidogrel 75 mg|1 tablet|Once daily|30 days">Use medicines</button></article>
+          <article class="rounded-xl bg-slate-50 p-4"><div class="flex justify-between text-xs font-bold"><span>18 Jun 2026</span><span class="text-slate-400">Dr. Patil</span></div><p class="mt-2 text-xs font-semibold">Coronary artery disease</p><p class="mt-1 text-[11px] text-slate-500">Metoprolol 25 mg • Pantoprazole 40 mg</p><button class="use-history mt-3 rounded-lg bg-cyan-50 px-3 py-1.5 text-[10px] font-bold text-[#006876]" type="button" data-medicines="Metoprolol 25 mg|1 tablet|Twice daily|30 days;Pantoprazole 40 mg|1 tablet|Once daily|30 days">Use medicines</button></article>
+        </div>
+        <p class="mt-5 text-[10px] leading-relaxed text-slate-400">Previous medicines are for reference only. Confirm the current diagnosis, dose, and contraindications before signing.</p>
+      </aside>
+    </div>
+  </main>
+  <div id="toast" class="toast fixed bottom-6 left-1/2 hidden -translate-x-1/2 rounded-xl bg-[#00234d] px-4 py-3 text-sm font-bold text-white shadow-xl"></div>
+  <script>
+    (() => {
+      const list = document.getElementById('medicine-list');
+      const toast = document.getElementById('toast');
+      const notify = message => { toast.textContent = message; toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), 2500); };
+      const addRow = ([name = '', dose = '', frequency = 'Once daily', duration = '30 days'] = []) => {
+        const row = document.createElement('div');
+        row.className = 'medicine-row grid gap-2 rounded-xl bg-slate-50 p-3 md:grid-cols-[1.3fr_1fr_1fr_1fr_auto]';
+        row.innerHTML = `<input class="rounded-lg border-slate-200 px-3 py-2 text-xs" placeholder="Medicine name" value="${name}" required><input class="rounded-lg border-slate-200 px-3 py-2 text-xs" placeholder="Dose" value="${dose}" required><select class="rounded-lg border-slate-200 px-3 py-2 text-xs"><option ${frequency === 'Once daily' ? 'selected' : ''}>Once daily</option><option ${frequency === 'Twice daily' ? 'selected' : ''}>Twice daily</option><option ${frequency === 'After meals' ? 'selected' : ''}>After meals</option><option ${frequency === 'As needed' ? 'selected' : ''}>As needed</option></select><input class="rounded-lg border-slate-200 px-3 py-2 text-xs" placeholder="Duration" value="${duration}" required><button class="remove-row rounded-lg px-2 text-rose-600" type="button">✕</button>`;
+        list.appendChild(row);
+      };
+      addRow(['Aspirin 75 mg', '1 tablet', 'Once daily', '30 days']); addRow(['Atorvastatin 40 mg', '1 tablet', 'Once daily', '30 days']);
+      document.getElementById('add-medicine').addEventListener('click', () => addRow());
+      list.addEventListener('click', event => event.target.closest('.remove-row')?.closest('.medicine-row')?.remove());
+      document.querySelectorAll('.use-history').forEach(button => button.addEventListener('click', () => { list.innerHTML = ''; button.dataset.medicines.split(';').forEach(item => addRow(item.split('|'))); notify('Previous medicines loaded for editing.'); }));
+      document.getElementById('prescription-form').addEventListener('submit', event => { event.preventDefault(); document.getElementById('status').textContent = 'Prescription saved and signed successfully.'; document.getElementById('status').classList.remove('hidden'); notify('E-prescription saved.'); });
+      document.getElementById('print').addEventListener('click', () => window.print());
+    })();
+  </script>
+</body>
+</html>

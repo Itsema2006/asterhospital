@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surgical & OPD Schedule | Aster Aadhar Clinician Suite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#00234d', secondary: '#006876', teal: '#009A84', danger: '#E11D48' },
+          fontFamily: { display: ['Plus Jakarta Sans', 'sans-serif'], body: ['Inter', 'sans-serif'] }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; }
+    h1, h2, h3, button { font-family: "Plus Jakarta Sans", sans-serif; }
+    .reveal { animation: reveal .5s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .toast { animation: toast .3s ease-out both; }
+    @keyframes toast { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    @media (prefers-reduced-motion: reduce) { .reveal, .toast { animation: none; } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:px-8">
+    <div class="mx-auto flex max-w-[1500px] items-center justify-between gap-4">
+      <a href="docdash.html" class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary font-bold text-white">BP</div>
+        <div><p class="font-display text-sm font-bold text-primary">Aster Aadhar</p><p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Surgical & OPD Schedule</p></div>
+      </a>
+      <div class="hidden items-center gap-3 md:flex"><span class="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">Live • Room 204</span><span class="text-right text-xs text-slate-500">Dr. Bhupendra Patil, MCh<br><strong class="text-primary">Cardiac Sciences</strong></span></div>
+      <a href="docdash.html" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-primary hover:bg-slate-50">Back to Dashboard</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-[1500px] space-y-5 px-4 py-6 md:px-8">
+    <section class="reveal flex flex-col justify-between gap-5 rounded-2xl bg-primary p-5 text-white shadow-lg md:flex-row md:items-center md:p-7">
+      <div><p class="text-xs font-bold uppercase tracking-[.18em] text-cyan-200">Doctor workspace</p><h1 class="mt-2 text-2xl font-extrabold md:text-3xl">Surgical & OPD Schedule</h1><p class="mt-2 max-w-2xl text-sm text-blue-100">Coordinate consultation slots, OT readiness, surgical teams, and patient preparation from one daily schedule.</p></div>
+      <div class="flex flex-wrap gap-2"><button class="action rounded-lg bg-white/10 px-3 py-2 text-xs font-bold hover:bg-white/20" data-message="Schedule synced with OT and OPD teams.">↻ Sync Schedule</button><button class="action rounded-lg bg-teal px-3 py-2 text-xs font-bold hover:bg-secondary" data-message="New surgical case form is ready.">＋ Add Case</button></div>
+    </section>
+
+    <section class="reveal flex flex-col justify-between gap-4 rounded-2xl bg-white p-5 shadow-sm md:flex-row md:items-center">
+      <div><p class="text-xs font-bold uppercase tracking-wider text-secondary">Thursday • 10 September 2026</p><h2 class="mt-1 text-xl font-bold text-primary">Today’s clinical schedule</h2><p class="mt-1 text-xs text-slate-500">OPD session 09:00 AM–02:00 PM • OT block 01:30 PM–05:00 PM</p></div>
+      <div class="flex flex-wrap gap-2"><button class="day-btn rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white" data-day="Today">Today</button><button class="day-btn rounded-lg bg-slate-100 px-4 py-2 text-xs font-bold text-primary" data-day="Tomorrow">Tomorrow</button><button class="day-btn rounded-lg bg-slate-100 px-4 py-2 text-xs font-bold text-primary" data-day="Friday">Friday</button></div>
+    </section>
+
+    <section class="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
+      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">OPD slots</p><strong class="mt-1 block text-2xl text-primary">24</strong><span class="text-[11px] text-emerald-600">12 completed</span></div>
+      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Waiting</p><strong class="mt-1 block text-2xl text-amber-500">5</strong><span class="text-[11px] text-slate-500">Avg wait 22m</span></div>
+      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">OT cases</p><strong class="mt-1 block text-2xl text-secondary">2</strong><span class="text-[11px] text-slate-500">1 in preparation</span></div>
+      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Pre-op clear</p><strong class="mt-1 block text-2xl text-emerald-600">1</strong><span class="text-[11px] text-slate-500">1 pending review</span></div>
+      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Team ready</p><strong class="mt-1 block text-2xl text-teal">8</strong><span class="text-[11px] text-slate-500">On duty now</span></div>
+      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Tele-OPD</p><strong class="mt-1 block text-2xl text-secondary">3</strong><span class="text-[11px] text-slate-500">Video rooms ready</span></div>
+      <div class="reveal rounded-xl bg-rose-50 p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-rose-500">Alerts</p><strong class="mt-1 block text-2xl text-danger">2</strong><span class="text-[11px] text-danger">Action required</span></div>
+    </section>
+
+    <section class="grid gap-5 xl:grid-cols-[1.1fr_.9fr]">
+      <article class="reveal rounded-2xl bg-white p-5 shadow-sm">
+        <div class="flex flex-col justify-between gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center"><div><h2 class="text-xl font-bold text-primary">OPD consultation slots</h2><p class="mt-1 text-xs text-slate-500">Manage appointment order and patient readiness.</p></div><select id="opd-filter" class="rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-secondary focus:ring-secondary"><option value="all">All OPD slots</option><option value="waiting">Waiting</option><option value="completed">Completed</option><option value="tele">Tele-OPD</option></select></div>
+        <div class="mt-4 space-y-3" id="opd-list">
+          <div class="opd-item rounded-xl border border-cyan-100 bg-cyan-50/50 p-4" data-status="waiting"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-secondary px-2 py-1 text-xs font-bold text-white">#15</span><div><h3 class="font-bold text-primary">Mrs. Meera Mandhare • 58y / F</h3><p class="text-xs text-slate-500">10:00 AM • Post-PTCA Day 45 review</p></div></div><span class="rounded-full bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-700">In cabin</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>BP 102/68 • HR 88 • SpO2 96%</span><button class="action rounded-lg bg-teal px-3 py-1.5 font-bold text-white" data-message="Consultation opened for Mrs. Meera Mandhare.">Open consult</button></div></div>
+          <div class="opd-item rounded-xl border border-rose-100 bg-rose-50/40 p-4" data-status="waiting"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-danger px-2 py-1 text-xs font-bold text-white">#16</span><div><h3 class="font-bold text-primary">Mr. Anant Gaikwad • 71y / M</h3><p class="text-xs text-slate-500">10:15 AM • Triple vessel disease follow-up</p></div></div><span class="rounded-full bg-rose-100 px-2 py-1 text-[10px] font-bold text-danger">Priority triage</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>BP 148/92 • HR 76 • SpO2 97%</span><button class="action rounded-lg bg-primary px-3 py-1.5 font-bold text-white" data-message="Patient #16 called to Cabin 204.">Call patient</button></div></div>
+          <div class="opd-item rounded-xl border border-slate-200 p-4" data-status="tele"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-secondary px-2 py-1 text-xs font-bold text-white">#18</span><div><h3 class="font-bold text-primary">Mrs. Nilima Chougule • 46y / F</h3><p class="text-xs text-slate-500">10:45 AM • Mechanical mitral valve review</p></div></div><span class="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-bold text-secondary">Tele-OPD</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>Video room ready • INR 2.4</span><button class="action rounded-lg bg-secondary px-3 py-1.5 font-bold text-white" data-message="Tele-consult room opened.">Join call</button></div></div>
+          <div class="opd-item rounded-xl border border-emerald-100 bg-emerald-50/40 p-4" data-status="completed"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-emerald-600 px-2 py-1 text-xs font-bold text-white">#14</span><div><h3 class="font-bold text-primary">Mr. Arjun Mane • 52y / M</h3><p class="text-xs text-slate-500">09:40 AM • Pre-operative thoracic review</p></div></div><span class="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-bold text-emerald-700">Completed</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>Summary signed • CABG clearance advised</span><button class="action rounded-lg bg-slate-100 px-3 py-1.5 font-bold text-primary" data-message="Consultation summary opened.">View summary</button></div></div>
+        </div>
+      </article>
+
+      <article class="reveal rounded-2xl bg-white p-5 shadow-sm">
+        <div class="flex flex-col justify-between gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center"><div><h2 class="text-xl font-bold text-primary">Surgical / OT schedule</h2><p class="mt-1 text-xs text-slate-500">OT-3 Laminar Flow • Cardiac block</p></div><span class="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-700">Team on standby</span></div>
+        <div class="mt-4 space-y-3">
+          <div class="rounded-xl border-l-4 border-secondary bg-cyan-50/60 p-4"><div class="flex items-center justify-between gap-2"><span class="rounded-full bg-primary-fixed px-2 py-1 text-[10px] font-bold text-primary">01:30 PM • OT-3</span><span class="text-[10px] font-bold text-secondary">READY</span></div><h3 class="mt-3 font-bold text-primary">Minimally Invasive CABG</h3><p class="mt-1 text-xs text-slate-500">Patient: Shrikant Mane • 54y / M</p><p class="mt-2 text-[11px] text-slate-500">Cross-match: 4 Units PRBC reserved • PAC clear</p><button class="action mt-3 rounded-lg bg-primary px-3 py-2 text-[11px] font-bold text-white" data-message="OT checklist and consent opened for Shrikant Mane.">Checklist & Consent</button></div>
+          <div class="rounded-xl border-l-4 border-amber-400 bg-amber-50/60 p-4"><div class="flex items-center justify-between gap-2"><span class="rounded-full bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-700">03:45 PM • OT-2</span><span class="text-[10px] font-bold text-amber-700">PRE-OP</span></div><h3 class="mt-3 font-bold text-primary">Surgical AVR Evaluation</h3><p class="mt-1 text-xs text-slate-500">Patient: Vikram Deshmukh • 45y / M</p><p class="mt-2 text-[11px] text-slate-500">TEE reviewed • Anesthesia clearance pending</p><button class="action mt-3 rounded-lg bg-amber-500 px-3 py-2 text-[11px] font-bold text-white" data-message="Pre-operative clearance task assigned to anesthesia.">Review readiness</button></div>
+          <div class="rounded-xl border border-slate-200 p-4"><div class="flex items-center justify-between gap-2"><h3 class="font-bold text-primary">Cardiac board review</h3><span class="text-[10px] font-semibold text-slate-500">04:30 PM</span></div><p class="mt-1 text-xs text-slate-500">3 case presentations • TAVI vs Surgical AVR</p><button class="action mt-3 rounded-lg bg-slate-100 px-3 py-2 text-[11px] font-bold text-primary" data-message="Cardiac board dossiers opened.">View dossiers</button></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="reveal grid gap-5 md:grid-cols-3">
+      <div class="rounded-2xl bg-white p-5 shadow-sm"><h2 class="font-bold text-primary">Surgical team</h2><p class="mt-1 text-xs text-slate-500">On duty 08:00 AM–08:00 PM</p><div class="mt-4 space-y-3 text-xs"><div class="flex items-center justify-between"><span>Dr. Lokesh Chaudhari, MD<br><small class="text-slate-400">Lead cardiac anesthetist</small></span><button class="action rounded-lg bg-cyan-50 px-2 py-1 text-secondary" data-message="Dialing Extension 3108.">☎</button></div><div class="flex items-center justify-between"><span>Dr. Aniket Shinde, MS<br><small class="text-slate-400">Cardiac senior resident</small></span><button class="action rounded-lg bg-cyan-50 px-2 py-1 text-secondary" data-message="Dialing Extension 2404.">☎</button></div></div></div>
+      <div class="rounded-2xl bg-white p-5 shadow-sm"><h2 class="font-bold text-primary">OT readiness checklist</h2><div class="mt-4 space-y-3 text-xs"><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox" checked> Blood products reserved</label><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox" checked> PAC and anesthesia clearance</label><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox"> Consent signed</label><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox"> OT brief completed</label></div><p id="check-count" class="mt-4 text-[11px] font-semibold text-secondary">2 of 4 complete</p></div>
+      <div class="rounded-2xl bg-white p-5 shadow-sm"><h2 class="font-bold text-primary">Schedule notes</h2><textarea id="schedule-note" class="mt-4 h-24 w-full resize-none rounded-lg border-slate-200 bg-slate-50 p-3 text-xs focus:border-secondary focus:ring-secondary" placeholder="Add a note for the OT or OPD team..."></textarea><button id="save-note" class="action mt-3 rounded-lg bg-primary px-3 py-2 text-[11px] font-bold text-white" data-message="Schedule note saved for the clinical team.">Save note</button></div>
+    </section>
+  </main>
+  <div id="toast" class="toast fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-xl" role="status"></div>
+  <script>
+    (() => {
+      const toast = document.getElementById('toast');
+      const notify = message => { toast.textContent = message; toast.classList.remove('hidden'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 2800); };
+      document.querySelectorAll('.action').forEach(button => button.addEventListener('click', () => notify(button.dataset.message || 'Action completed.')));
+      document.querySelectorAll('.day-btn').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.day-btn').forEach(item => item.classList.remove('bg-primary', 'text-white')); button.classList.add('bg-primary', 'text-white'); notify(`${button.dataset.day} schedule loaded.`); }));
+      const filter = document.getElementById('opd-filter');
+      filter.addEventListener('change', () => document.querySelectorAll('.opd-item').forEach(item => item.classList.toggle('hidden', filter.value !== 'all' && item.dataset.status !== filter.value)));
+      const checkCount = document.getElementById('check-count');
+      document.querySelectorAll('.check-item').forEach(item => item.addEventListener('change', () => { const total = document.querySelectorAll('.check-item').length; const complete = document.querySelectorAll('.check-item:checked').length; checkCount.textContent = `${complete} of ${total} complete`; }));
+    })();
+  </script>
+</body>
+</html>
