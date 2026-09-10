@@ -36,6 +36,17 @@
     .toast { animation: toast .3s ease-out both; }
     @keyframes toast { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
     @media (prefers-reduced-motion: reduce) { .reveal, .toast { animation: none; } }
+    html { overflow-x: hidden; }
+    *, *::before, *::after { box-sizing: border-box; }
+    img, svg { max-width: 100%; }
+    table { min-width: 0; }
+    @media (max-width: 640px) {
+      header { padding-top: .75rem; padding-bottom: .75rem; }
+      header .mx-auto > a:last-child { white-space: nowrap; }
+      main { padding-top: 1rem; padding-bottom: 1rem; }
+      h1 { line-height: 1.2; }
+      .toast { left: 1rem; right: 1rem; width: auto; text-align: center; }
+    }
   </style>
 </head>
 <body class="bg-subtle text-slate-800">

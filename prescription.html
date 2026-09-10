@@ -5,7 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Prescription | Aster Aadhar</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>body{font-family:Inter,Arial,sans-serif}.toast{animation:toast .25s ease-out}@keyframes toast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}</style>
+  <style>
+    body{font-family:Inter,Arial,sans-serif}
+    .toast{animation:toast .25s ease-out}
+    @keyframes toast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+    html{overflow-x:hidden}
+    *,*::before,*::after{box-sizing:border-box}
+    input,select,textarea{max-width:100%}
+    @media(max-width:640px){
+      header{padding:.75rem 1rem}
+      header .mx-auto{gap:.75rem}
+      header a{white-space:nowrap}
+      main{padding:1rem}
+      main>section{padding:1.25rem}
+      form,aside{padding:1.25rem}
+      form>div:last-of-type{flex-direction:column;align-items:stretch}
+      form>div:last-of-type button{width:100%}
+      .toast{left:1rem;right:1rem;width:auto;text-align:center}
+    }
+  </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800">
   <header class="border-b border-slate-200 bg-white px-5 py-4">
