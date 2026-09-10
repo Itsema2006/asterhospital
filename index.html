@@ -907,36 +907,51 @@
         </div>
       </div>
 
-      <!-- AI Healthcare Assistant -->
-      <section class="reveal-init stagger-4 mt-10 lg:mt-12 overflow-hidden rounded-2xl border border-cyan-200 bg-gradient-to-br from-[#062047] via-[#0A3871] to-[#0098A6] p-5 shadow-elevated sm:p-7" id="appointment-booking" aria-labelledby="ai-assistant-title">
-        <div class="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+      <!-- Appointment Booking & Doctor Availability -->
+      <section class="reveal-init stagger-4 mt-10 lg:mt-12 overflow-hidden rounded-2xl border border-cyan-200 bg-gradient-to-br from-[#062047] via-[#0A3871] to-[#0098A6] p-5 shadow-elevated sm:p-7" id="appointment-booking" aria-labelledby="appointment-booking-title">
+        <div class="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div class="text-white">
             <div class="mb-4 flex items-center gap-2">
-              <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-cyan-200">
-                <span class="material-symbols-outlined">smart_toy</span>
-              </span>
-              <span class="text-xs font-extrabold uppercase tracking-[0.16em] text-cyan-100">Aster AI Care Guide</span>
+              <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-cyan-200">🩺</span>
+              <span class="text-xs font-extrabold uppercase tracking-[0.16em] text-cyan-100">Online OPD booking</span>
             </div>
-            <h2 id="ai-assistant-title" class="font-heading text-2xl font-extrabold sm:text-3xl">How can we help you today?</h2>
-            <p class="mt-2 max-w-lg text-sm leading-relaxed text-blue-100">Ask about specialists, departments, appointments, insurance, or what to do next. Our care guide is available 24/7.</p>
-            <div class="mt-4 flex flex-wrap gap-2 text-[11px] font-semibold text-cyan-50">
-              <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1.5">Find a specialist</span>
-              <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1.5">Book an OPD visit</span>
-              <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1.5">Insurance help</span>
+            <h2 id="appointment-booking-title" class="font-heading text-2xl font-extrabold sm:text-3xl">Check doctor availability</h2>
+            <p class="mt-2 max-w-lg text-sm leading-relaxed text-blue-100">Choose a specialist and date to view live appointment slots. You can check availability without an account; sign in only when you are ready to confirm.</p>
+            <div class="mt-5 space-y-2 text-[11px] font-semibold text-cyan-50">
+              <p class="flex items-center gap-2"><span class="text-emerald-300">●</span> Green slots are currently available</p>
+              <p class="flex items-center gap-2"><span class="text-cyan-200">🔒</span> Login is required to confirm a booking</p>
             </div>
           </div>
           <div class="rounded-2xl bg-white p-4 shadow-2xl sm:p-5">
-            <div id="ai-chat-messages" class="mb-4 flex max-h-48 min-h-32 flex-col gap-3 overflow-y-auto pr-1" aria-live="polite">
-              <div class="max-w-[90%] rounded-2xl rounded-tl-sm bg-brand-lightBlue px-4 py-3 text-xs leading-relaxed text-brand-navy">Hello! I’m Aster’s care assistant. Tell me what you need help with, and I’ll guide you to the right service.</div>
-            </div>
-            <form id="ai-chat-form" class="flex gap-2">
-              <label class="sr-only" for="ai-chat-input">Ask Aster AI Care Guide</label>
-              <input id="ai-chat-input" class="min-w-0 flex-1 rounded-xl border-slate-200 bg-slate-50 px-3.5 py-3 text-sm focus:border-brand-teal focus:ring-brand-teal" placeholder="Ask about a doctor, department, or appointment..." autocomplete="off" required>
-              <button class="flex items-center justify-center rounded-xl bg-brand-teal px-4 text-white transition hover:bg-brand-tealHover" type="submit" aria-label="Send message">
-                <span class="material-symbols-outlined text-[20px]">send</span>
+            <form id="opd-search-form" class="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label for="doctor-select" class="mb-1.5 block text-xs font-bold text-slate-700">Doctor / speciality</label>
+                <select id="doctor-select" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3.5 py-3 text-sm focus:border-brand-teal focus:ring-brand-teal">
+                  <option value="Dr. Bhupendra Patil — Cardiac Sciences">Dr. Bhupendra Patil — Cardiac Sciences</option>
+                  <option value="Dr. Ananya Deshmukh — Neurology">Dr. Ananya Deshmukh — Neurology</option>
+                  <option value="Dr. Neha Kulkarni — Obstetrics &amp; Gynaecology">Dr. Neha Kulkarni — Obstetrics &amp; Gynaecology</option>
+                  <option value="Any Available Consultant">Any Available Consultant</option>
+                </select>
+              </div>
+              <div>
+                <label for="date-select" class="mb-1.5 block text-xs font-bold text-slate-700">Appointment date</label>
+                <input id="date-select" type="date" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3.5 py-3 text-sm focus:border-brand-teal focus:ring-brand-teal" required>
+              </div>
+              <div class="sm:col-span-2">
+                <p class="mb-2 text-xs font-bold text-slate-700">Available slots <span class="font-normal text-slate-400">(select a slot to continue)</span></p>
+                <div id="availability-slots" class="grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="Available appointment slots">
+                  <button type="button" class="availability-slot rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-2.5 text-xs font-bold text-emerald-700 transition hover:border-emerald-400" data-slot="09:00 AM">09:00 AM</button>
+                  <button type="button" class="availability-slot rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-2.5 text-xs font-bold text-emerald-700 transition hover:border-emerald-400" data-slot="10:30 AM">10:30 AM</button>
+                  <button type="button" class="availability-slot rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-2.5 text-xs font-bold text-emerald-700 transition hover:border-emerald-400" data-slot="02:00 PM">02:00 PM</button>
+                  <button type="button" class="availability-slot rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-2.5 text-xs font-bold text-emerald-700 transition hover:border-emerald-400" data-slot="04:30 PM">04:30 PM</button>
+                </div>
+                <input id="selected-slot" type="hidden" required>
+              </div>
+              <button type="submit" class="sm:col-span-2 mt-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-navy to-brand-teal px-4 py-3 text-sm font-bold text-white shadow-md transition hover:shadow-lg">
+                Continue to confirm booking <span aria-hidden="true">→</span>
               </button>
             </form>
-            <p class="mt-2 text-[10px] text-slate-400">For emergencies, call <a class="font-bold text-brand-alertRed" href="tel:+919158909090">+91-9158909090</a>.</p>
+            <p id="availability-status" class="mt-3 text-center text-[11px] font-semibold text-emerald-600" role="status">Availability updated for today.</p>
           </div>
         </div>
       </section>
@@ -1758,19 +1773,23 @@
           <span class="text-slate-500">Preferred Date:</span>
           <span id="modal-date" class="font-bold text-brand-teal">2025-05-15</span>
         </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Selected Slot:</span>
+          <span id="modal-slot" class="font-bold text-brand-teal">09:00 AM</span>
+        </div>
       </div>
 
       <p class="text-[11px] text-slate-500 text-center mt-4">
-        Our OPD desk will promptly confirm your appointment slot via SMS &amp; WhatsApp on your mobile.
+        Your slot is held for confirmation. Sign in to securely confirm this appointment.
       </p>
 
       <div class="mt-6 flex gap-3">
         <button id="modal-close-btn" class="flex-1 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
           Close
         </button>
-        <a href="tel:02316622555" class="flex-1 px-4 py-2.5 bg-brand-navy hover:bg-brand-royal text-white font-bold rounded-xl text-xs text-center transition flex items-center justify-center gap-1.5 shadow-sm">
-          <span>Call Desk Now</span> →
-        </a>
+        <button id="confirm-booking-btn" type="button" class="flex-1 px-4 py-2.5 bg-brand-navy hover:bg-brand-royal text-white font-bold rounded-xl text-xs text-center transition flex items-center justify-center gap-1.5 shadow-sm">
+          <span>Login to confirm</span> →
+        </button>
       </div>
     </div>
   </div>
@@ -1802,6 +1821,10 @@
       const modalCoe = document.getElementById('modal-coe');
       const modalDoctor = document.getElementById('modal-doctor');
       const modalDate = document.getElementById('modal-date');
+      const modalSlot = document.getElementById('modal-slot');
+      const confirmBookingBtn = document.getElementById('confirm-booking-btn');
+      const selectedSlotInput = document.getElementById('selected-slot');
+      const availabilityStatus = document.getElementById('availability-status');
       const loginModal = document.getElementById('login-modal');
       const loginModalCard = document.getElementById('login-modal-card');
       const loginModalClose = document.getElementById('login-modal-close');
@@ -1822,6 +1845,29 @@
         mobile: '9876543210',
         password: 'Aster@123'
       };
+      let pendingAppointment = null;
+
+      const dateSelect = document.getElementById('date-select');
+      if (dateSelect) {
+        const today = new Date();
+        dateSelect.min = today.toISOString().split('T')[0];
+        dateSelect.value = dateSelect.min;
+      }
+
+      document.querySelectorAll('.availability-slot').forEach(slot => {
+        slot.addEventListener('click', () => {
+          document.querySelectorAll('.availability-slot').forEach(option => {
+            option.classList.remove('bg-brand-navy', 'text-white', 'border-brand-navy');
+            option.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+            option.setAttribute('aria-pressed', 'false');
+          });
+          slot.classList.remove('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+          slot.classList.add('bg-brand-navy', 'text-white', 'border-brand-navy');
+          slot.setAttribute('aria-pressed', 'true');
+          if (selectedSlotInput) selectedSlotInput.value = slot.dataset.slot || '';
+          if (availabilityStatus) availabilityStatus.textContent = `${slot.dataset.slot} selected. Continue to reserve it.`;
+        });
+      });
 
       // --- 1. ACTIVE NAV LINK SCROLL-SPY ---
       function updateActiveNav() {
@@ -2000,13 +2046,21 @@
       if (opdForm) {
         opdForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          const spec = document.getElementById('speciality-select')?.value || 'All Specialities';
           const doc = document.getElementById('doctor-select')?.value || 'Any Available Consultant';
           const dt = document.getElementById('date-select')?.value || 'Today';
+          const slot = selectedSlotInput?.value || '';
 
-          if (modalCoe) modalCoe.textContent = spec;
-          if (modalDoctor) modalDoctor.textContent = doc;
+          if (!slot) {
+            if (availabilityStatus) availabilityStatus.textContent = 'Please select an available slot before continuing.';
+            if (availabilityStatus) availabilityStatus.className = 'mt-3 text-center text-[11px] font-semibold text-rose-600';
+            return;
+          }
+
+          if (modalCoe) modalCoe.textContent = doc.split(' — ')[1] || doc;
+          if (modalDoctor) modalDoctor.textContent = doc.split(' — ')[0] || doc;
           if (modalDate) modalDate.textContent = dt;
+          if (modalSlot) modalSlot.textContent = slot;
+          pendingAppointment = { doctor: doc, date: dt, slot };
 
           // Open modal
           if (bookingModal && bookingModalCard) {
@@ -2030,6 +2084,16 @@
       modalCloseBtn?.addEventListener('click', closeModal);
       bookingModal?.addEventListener('click', (e) => {
         if (e.target === bookingModal) closeModal();
+      });
+
+      confirmBookingBtn?.addEventListener('click', () => {
+        closeModal();
+        loginModal?.classList.remove('opacity-0', 'pointer-events-none');
+        loginModal?.classList.add('opacity-100', 'pointer-events-auto');
+        loginModalCard?.classList.remove('scale-95');
+        loginModalCard?.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
+        loginIdentifier?.focus();
       });
 
       // --- 8. AI CARE GUIDE CHAT ---
@@ -2147,7 +2211,20 @@
           if (isDemoDoctor) {
             window.location.href = 'docdash.html';
           } else if (isPatientLogin) {
-            window.location.href = 'patientdash.html';
+            if (pendingAppointment) {
+              const { doctor, date, slot } = pendingAppointment;
+              loginStatus.textContent = `Appointment confirmed with ${doctor.split(' — ')[0]} on ${date} at ${slot}.`;
+              loginStatus.classList.remove('text-rose-600');
+              loginStatus.classList.add('text-brand-teal');
+              if (availabilityStatus) {
+                availabilityStatus.textContent = 'Appointment confirmed. Your patient dashboard has the booking details.';
+                availabilityStatus.className = 'mt-3 text-center text-[11px] font-semibold text-brand-teal';
+              }
+              pendingAppointment = null;
+              setTimeout(closeLoginModal, 1200);
+            } else {
+              window.location.href = 'patientdash.html';
+            }
           }
         }
       });
