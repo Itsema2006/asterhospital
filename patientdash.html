@@ -1,51 +1,556 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Patient Health Dashboard | Aster Aadhar</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{navy:'#062d5b',teal:'#009a84',ice:'#eef6ff',ink:'#14243d'},fontFamily:{display:['Plus Jakarta Sans','sans-serif'],body:['Inter','sans-serif']}}}};</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#062d5b',
+            teal: '#009a84',
+            ice: '#eef6ff',
+            ink: '#14243d'
+          },
+          fontFamily: {
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+            body: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <style>
-    body{font-family:Inter,sans-serif}.display{font-family:"Plus Jakarta Sans",sans-serif}.reveal{animation:reveal .55s cubic-bezier(.16,1,.3,1) both}@keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}.toast{animation:toast .3s ease-out}@keyframes toast{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){.reveal,.toast{animation:none}}
+    body { font-family: Inter, sans-serif; }
+    h1, h2, h3, button, .display, .font-display { font-family: "Plus Jakarta Sans", sans-serif; }
+    .reveal { animation: reveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .toast { animation: toast 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    @keyframes toast { from { opacity: 0; transform: translate(-50%, 14px) scale(0.95); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+    
+    @keyframes heartbeatPulse {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.22); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.15); }
+      60% { transform: scale(1); }
+    }
+    .animate-heartbeat-live {
+      animation: heartbeatPulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes sparklineDraw {
+      0% { stroke-dashoffset: 300; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .sparkline-line {
+      stroke-dasharray: 300;
+      stroke-dashoffset: 300;
+      animation: sparklineDraw 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes qrGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 154, 132, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(0, 154, 132, 0); }
+    }
+    .qr-glow { animation: qrGlow 2.5s infinite; }
+    
+    .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -4px rgba(6, 45, 91, 0.08); }
+    @media (prefers-reduced-motion: reduce) { .reveal, .toast, .animate-heartbeat-live, .sparkline-line, .qr-glow, .card-hover { animation: none; transition: none; } }
   </style>
 </head>
-<body class="bg-[#f6f8fd] text-ink">
-  <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:px-8">
+<body class="bg-[#f6f8fd] text-ink antialiased min-h-screen">
+  <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md md:px-8 shadow-xs">
     <div class="mx-auto flex max-w-[1500px] items-center justify-between gap-3">
-      <a href="index.html" class="flex items-center gap-2"><div class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy text-xs font-bold text-white">A</div><div><p class="display text-sm font-bold text-navy">Aster Aadhar</p><p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Patient Care Portal</p></div></a>
-      <div class="hidden items-center gap-3 md:flex"><span class="rounded-full bg-rose-50 px-3 py-1.5 text-[11px] font-bold text-rose-600">Emergency 24x7: +91-9158909090</span><input class="w-64 rounded-full border-0 bg-slate-100 px-4 py-2 text-xs" placeholder="Search doctors, reports, care plans..."></div>
-      <div class="flex items-center gap-2"><span class="hidden rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-bold text-emerald-700 sm:inline">Active Care Profile</span><button class="rounded-full bg-navy p-2 text-xs text-white" title="Profile">PM</button><button id="patient-logout" class="flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[11px] font-bold text-red-700 transition hover:bg-red-100" type="button" aria-label="Log out of patient portal"><span>↪</span><span class="hidden sm:inline">Logout</span></button></div>
+      <a href="index.html" class="flex items-center gap-2 group">
+        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy text-xs font-bold text-white shadow-xs group-hover:scale-105 transition-transform">A</div>
+        <div>
+          <p class="display text-sm font-bold text-navy group-hover:text-teal transition-colors">Aster Aadhar</p>
+          <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Patient Care Portal</p>
+        </div>
+      </a>
+      <div class="hidden items-center gap-3 md:flex">
+        <span class="rounded-full bg-rose-50 border border-rose-200 px-3 py-1.5 text-[11px] font-bold text-rose-600 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>Emergency 24x7: +91-9158909090
+        </span>
+        <input class="w-64 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs focus:bg-white focus:outline-none focus:border-teal transition" placeholder="Search doctors, reports, care plans...">
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="hidden rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-[11px] font-bold text-emerald-700 sm:inline flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Active Care Profile
+        </span>
+        <button class="rounded-full bg-navy p-2 text-xs font-bold text-white shadow-xs" title="Profile">PM</button>
+        <button id="patient-logout" class="flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[11px] font-bold text-red-700 transition hover:bg-red-100" type="button" aria-label="Log out of patient portal">
+          <span>↪</span><span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
     </div>
   </header>
-  <div class="mx-auto grid max-w-[1500px] gap-5 px-4 py-5 md:grid-cols-[180px_1fr] md:px-8">
-    <aside class="hidden rounded-xl bg-white p-3 shadow-sm md:block">
-      <div class="mb-4 rounded-lg bg-ice p-3"><p class="text-[9px] font-bold uppercase text-slate-400">Patient MRN: AA-89201</p><p class="mt-1 display text-xs font-bold text-navy">Pooja M. Patil</p><span class="mt-2 inline-block rounded-full bg-emerald-100 px-2 py-1 text-[9px] font-bold text-emerald-700">Active</span></div>
-      <nav class="space-y-1 text-xs font-semibold"><a class="flex items-center gap-2 rounded-lg bg-navy px-3 py-2.5 text-white" href="#overview">▦ My Health Dashboard</a><a class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50" href="#appointments">▣ Book Appointment</a><a class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50" href="#reports">♧ Lab & Radiology Reports</a><a class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50" href="#prescriptions">▤ Prescriptions & Care Plans</a><a class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50" href="#maternal">◉ Maternal & Baby Tracker</a><a class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50" href="#billing">▧ Billing & Insurance</a></nav>
-      <div class="mt-28 border-t border-slate-100 pt-4 text-[9px] text-slate-400">NABH Accredited<br><strong class="text-teal">Aster Cares</strong></div>
+
+  <div class="mx-auto grid max-w-[1500px] gap-5 px-4 py-5 md:grid-cols-[200px_1fr] md:px-8">
+    <aside class="hidden rounded-xl bg-white p-4 shadow-sm md:block border border-slate-100 h-fit sticky top-20">
+      <div class="mb-4 rounded-lg bg-ice p-3 border border-blue-100">
+        <p class="text-[9px] font-bold uppercase text-slate-400">Patient UHID: AA-89201</p>
+        <p class="mt-1 display text-sm font-bold text-navy">Pooja M. Patil</p>
+        <span class="mt-2 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-bold text-emerald-700">Active Maternal Care</span>
+      </div>
+      <nav class="space-y-1 text-xs font-semibold text-slate-600">
+        <a class="flex items-center gap-2 rounded-lg bg-navy px-3 py-2.5 text-white shadow-xs" href="#overview">
+          <span class="material-symbols-outlined text-[16px]">dashboard</span>
+          <span>My Health</span>
+        </a>
+        <a class="flex items-center gap-2 rounded-lg px-3 py-2.5 hover:bg-slate-50 transition" href="#appointments">
+          <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+          <span>Book Specialist</span>
+        </a>
+        <a class="flex items-center gap-2 rounded-lg px-3 py-2.5 hover:bg-slate-50 transition" href="#reports">
+          <span class="material-symbols-outlined text-[16px]">clinical_notes</span>
+          <span>Diagnostics &amp; Labs</span>
+        </a>
+        <a class="flex items-center gap-2 rounded-lg px-3 py-2.5 hover:bg-slate-50 transition" href="#prescriptions">
+          <span class="material-symbols-outlined text-[16px]">prescriptions</span>
+          <span>Prescriptions</span>
+        </a>
+        <a class="flex items-center gap-2 rounded-lg px-3 py-2.5 hover:bg-slate-50 transition" href="#maternal">
+          <span class="material-symbols-outlined text-[16px]">pregnant_woman</span>
+          <span>Baby Tracker</span>
+        </a>
+        <a class="flex items-center gap-2 rounded-lg px-3 py-2.5 hover:bg-slate-50 transition" href="#billing">
+          <span class="material-symbols-outlined text-[16px]">payments</span>
+          <span>Billing &amp; TPA</span>
+        </a>
+      </nav>
+      <div class="mt-20 border-t border-slate-100 pt-4 text-[10px] text-slate-400">
+        NABH Accredited Tertiary Flagship<br><strong class="text-teal font-bold">Aster Cares 24x7</strong>
+      </div>
     </aside>
+
     <main id="overview" class="space-y-5">
-      <section class="reveal rounded-xl bg-white p-4 shadow-sm"><div class="flex flex-wrap items-center justify-between gap-3"><div class="flex items-center gap-2"><span class="rounded-full bg-ice px-3 py-1.5 text-[10px] font-bold text-navy">ACTIVE PROFILE: Pooja Patil (28y) • Maternal Care</span><span class="hidden rounded-full bg-slate-100 px-3 py-1.5 text-[10px] font-semibold text-slate-500 sm:inline">Ramesh Patil (62y) • Cardiology</span></div><span class="rounded-full bg-emerald-50 px-3 py-1.5 text-[10px] font-bold text-emerald-700">● Positive • TPA Insured</span></div><div class="mt-3 flex flex-wrap gap-2 text-[10px] text-slate-500"><span class="rounded-full bg-slate-50 px-3 py-1.5">UHID: AAH-PT-2024-9182</span><span class="rounded-full bg-slate-50 px-3 py-1.5">Aster Health Insurance</span></div></section>
-      <section id="maternal" class="reveal rounded-2xl bg-gradient-to-br from-navy to-[#0b5a86] p-5 text-white shadow-lg md:p-6"><div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-center"><div><p class="text-[10px] font-bold uppercase tracking-widest text-cyan-200">Maternal Health Care Portal</p><h1 class="display mt-2 text-2xl font-extrabold">Pooja M. Patil</h1><p class="mt-1 text-xs text-blue-100">Primary Obstetrician: Dr. Ulhas Damale • Aster Wing B, Suite 208</p><div class="mt-4 flex flex-wrap gap-2 text-[10px]"><span class="rounded-full bg-emerald-400/20 px-2.5 py-1 font-bold text-emerald-100">Third Trimester</span><span class="rounded-full bg-white/10 px-2.5 py-1">High-Risk Monitored</span></div></div><div class="grid grid-cols-2 gap-2 sm:grid-cols-4"><div class="rounded-lg bg-white/10 p-3"><p class="text-[9px] text-blue-100">Gestational Age</p><strong class="block text-lg">28w 3d</strong><span class="text-[9px]">Trimester 3</span></div><div class="rounded-lg bg-white/10 p-3"><p class="text-[9px] text-blue-100">Est. Due Date</p><strong class="block text-lg">18 Nov</strong><span class="text-[9px]">61 days left</span></div><div class="rounded-lg bg-white/10 p-3"><p class="text-[9px] text-blue-100">Fetal Heart</p><strong class="block text-lg">142 bpm</strong><span class="text-[9px] text-emerald-200">Normal</span></div><div class="rounded-lg bg-white/10 p-3"><p class="text-[9px] text-blue-100">Kick Counter</p><strong class="block text-lg">14</strong><span class="text-[9px]">Target: 10+</span></div></div></div><div class="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-white/15 pt-3 text-[10px]"><span>Next mandatory ANC scan: Thursday, 24 Oct (in 3 days) • Iron & Folic Acid: 8:00 PM</span><div class="flex gap-2"><button class="action rounded-lg bg-white/10 px-3 py-1.5 font-bold" data-message="Fetal movement log opened.">Log Fetal Kicks</button><button class="action rounded-lg bg-rose-500 px-3 py-1.5 font-bold" data-message="Maternity SOS team notified.">Maternity SOS</button></div></div></section>
+      <!-- Active Family Switcher Pill Bar -->
+      <section class="reveal rounded-xl bg-white p-4 shadow-sm border border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="rounded-full bg-ice px-3 py-1.5 text-[11px] font-bold text-navy border border-blue-100">ACTIVE PROFILE: Pooja Patil (28y) • Maternal Care</span>
+            <span class="hidden rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-semibold text-slate-500 sm:inline hover:bg-slate-200 transition cursor-pointer">Ramesh Patil (62y) • Cardiology</span>
+          </div>
+          <span class="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-[11px] font-bold text-emerald-700">● TPA Insured • Star Health</span>
+        </div>
+      </section>
+
+      <!-- Maternal & Baby Care Tracker Hero Card -->
+      <section id="maternal" class="reveal rounded-2xl bg-gradient-to-br from-navy via-[#0a4878] to-[#00838F] p-5 text-white shadow-lg md:p-7 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-60 h-60 rounded-full bg-teal/20 blur-3xl pointer-events-none"></div>
+        <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-center relative z-10">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-cyan-200">Maternal &amp; Baby Care Suite</p>
+            <h1 class="display mt-2 text-2xl font-extrabold md:text-3xl">Pooja M. Patil</h1>
+            <p class="mt-1 text-xs text-blue-100">Primary Obstetrician: <strong class="text-white">Dr. Ulhas Damale</strong> • Aster Wing B, Suite 208</p>
+            <div class="mt-4 flex flex-wrap gap-2 text-[10px]">
+              <span class="rounded-full bg-emerald-400/20 border border-emerald-300/40 px-3 py-1 font-bold text-emerald-100">Third Trimester</span>
+              <span class="rounded-full bg-white/10 px-3 py-1 font-medium">Routine Antenatal Protocol</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            <div class="rounded-xl bg-white/10 p-3.5 backdrop-blur-sm border border-white/15">
+              <p class="text-[10px] text-blue-100">Gestational Age</p>
+              <strong class="block text-xl font-bold mt-1">28w 3d</strong>
+              <div class="mt-1 w-full bg-white/20 h-1 rounded-full overflow-hidden">
+                <div class="bg-emerald-300 h-full rounded-full" style="width: 71%;"></div>
+              </div>
+              <span class="text-[9px] text-blue-200 mt-1 block">Trimester 3 (71%)</span>
+            </div>
+            <div class="rounded-xl bg-white/10 p-3.5 backdrop-blur-sm border border-white/15">
+              <p class="text-[10px] text-blue-100">Est. Due Date</p>
+              <strong class="block text-xl font-bold mt-1">18 Nov</strong>
+              <span class="text-[9px] text-cyan-200 mt-1 block">61 days remaining</span>
+            </div>
+            <!-- Live Pulsing Fetal Heart Widget -->
+            <div class="rounded-xl bg-white/10 p-3.5 backdrop-blur-sm border border-white/15">
+              <div class="flex items-center justify-between">
+                <p class="text-[10px] text-blue-100">Fetal Heart</p>
+                <span class="material-symbols-outlined text-[14px] text-rose-300 animate-heartbeat-live">favorite</span>
+              </div>
+              <strong class="block text-xl font-bold mt-1 text-emerald-200">142 bpm</strong>
+              <span class="text-[9px] text-emerald-300 mt-1 block">Rhythmic &amp; Normal</span>
+            </div>
+            <!-- Interactive Fetal Kick Counter -->
+            <div class="rounded-xl bg-white/10 p-3.5 backdrop-blur-sm border border-white/15">
+              <p class="text-[10px] text-blue-100">Kick Counter</p>
+              <strong id="kick-counter-val" class="block text-xl font-bold mt-1 text-white">14</strong>
+              <span id="kick-target-label" class="text-[9px] text-emerald-200 mt-1 block">Target 10+ Met ✓</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/15 pt-3.5 text-xs">
+          <span>Next mandatory ANC scan: <strong>Thursday, 24 Oct</strong> • Iron &amp; Folic Acid: 8:00 PM</span>
+          <div class="flex gap-2">
+            <button id="log-kick-btn" class="rounded-lg bg-teal hover:bg-emerald-500 px-3.5 py-1.5 text-xs font-bold transition shadow-sm flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">touch_app</span>
+              <span>+ Log Fetal Kick</span>
+            </button>
+            <button class="action rounded-lg bg-rose-600 hover:bg-rose-700 px-3.5 py-1.5 text-xs font-bold transition shadow-sm flex items-center gap-1" data-message="Emergency Maternity SOS Team alerted. An obstetric triage nurse is contacting you.">
+              <span class="material-symbols-outlined text-[14px]">emergency</span>
+              <span>Maternity SOS</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <div class="grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
-        <section id="appointments" class="reveal rounded-2xl bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><div><p class="text-[10px] font-bold uppercase tracking-wider text-teal">Specialist care OPD & virtual</p><h2 class="display mt-1 text-lg font-bold text-navy">Book Specialist Consultation</h2></div><span class="rounded-full bg-ice px-3 py-1 text-[10px] font-bold text-navy">Hospital OPD</span></div><div class="mt-4 flex gap-2 overflow-x-auto text-[10px]"><button class="rounded-full bg-navy px-3 py-1.5 font-bold text-white">Obstetrics & Gynaecology</button><button class="rounded-full bg-slate-100 px-3 py-1.5 font-bold text-slate-500">Cardiology Sciences</button><button class="rounded-full bg-slate-100 px-3 py-1.5 font-bold text-slate-500">Paediatrics</button></div><div class="mt-4 space-y-4">
-          <article class="flex flex-col gap-3 rounded-xl border border-slate-100 p-3 sm:flex-row"><div class="h-24 w-24 shrink-0 rounded-lg bg-emerald-50 p-2 text-center text-3xl">👩‍⚕️</div><div class="flex-1"><div class="flex justify-between gap-2"><div><h3 class="font-bold text-navy">Dr. Ulhas Damale</h3><p class="text-[10px] text-teal">MD, DGO, FICOG • 28+ Years Experience</p><p class="mt-1 text-[10px] text-slate-500">Obstetrician & Lead Obstetrician, High-Risk Fetal Medicine</p></div><strong class="text-xs text-navy">₹800</strong></div><p class="mt-2 text-[10px] text-slate-500">Wing B, 2nd Fl, Suite 208 • NABH Certified Protocol</p><p class="mt-3 text-[10px] font-bold text-slate-600">Available slots today</p><div class="slot-list mt-2 flex flex-wrap gap-2" data-doctor="damale"><button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal" data-slot="10:30 AM">10:30 AM</button><button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal" data-slot="11:15 AM">11:15 AM</button><button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal" data-slot="12:00 PM">12:00 PM</button></div><div class="mt-2 flex flex-wrap items-center justify-between gap-2"><span class="slot-count rounded-lg bg-ice px-2 py-1 text-[10px] font-bold text-secondary">3 free slots</span><button class="book-slot rounded-lg bg-teal px-3 py-2 text-[10px] font-bold text-white" data-doctor="Dr. Ulhas Damale">Book selected slot</button></div></div></article>
-          <article class="flex flex-col gap-3 rounded-xl border border-slate-100 p-3 sm:flex-row"><div class="h-24 w-24 shrink-0 rounded-lg bg-blue-50 p-2 text-center text-3xl">👨‍⚕️</div><div class="flex-1"><div class="flex justify-between gap-2"><div><h3 class="font-bold text-navy">Dr. Bhupendra Patil</h3><p class="text-[10px] text-teal">MS, MCh (CTVS) • 22 Years Experience</p><p class="mt-1 text-[10px] text-slate-500">Cardiovascular & Thoracic Surgeon • Cardiology OPD 104</p></div><strong class="text-xs text-navy">₹1,000</strong></div><p class="mt-2 text-[10px] text-slate-500">Next availability: Tomorrow • Video consult available</p><p class="mt-3 text-[10px] font-bold text-slate-600">Available slots tomorrow</p><div class="slot-list mt-2 flex flex-wrap gap-2" data-doctor="patil"><button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal" data-slot="09:00 AM">09:00 AM</button><button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal" data-slot="09:45 AM">09:45 AM</button></div><div class="mt-2 flex items-center justify-between gap-2"><span class="slot-count rounded-lg bg-ice px-2 py-1 text-[10px] font-bold text-secondary">2 free slots</span><button class="book-slot rounded-lg bg-navy px-3 py-2 text-[10px] font-bold text-white" data-doctor="Dr. Bhupendra Patil">Book selected slot</button></div></div></article>
-          <article class="flex flex-col gap-3 rounded-xl border border-slate-100 p-3 sm:flex-row"><div class="h-24 w-24 shrink-0 rounded-lg bg-amber-50 p-2 text-center text-3xl">👩‍⚕️</div><div class="flex-1"><h3 class="font-bold text-navy">Dr. Dinesh Kittur</h3><p class="text-[10px] text-teal">MD, DNB (Paediatrics) • Neonatal & Newborn Care</p><p class="mt-1 text-[10px] text-slate-500">Consultant Paediatrician & Neonatal Intensivist</p><button class="action mt-2 rounded-lg bg-slate-100 px-3 py-2 text-[10px] font-bold text-navy" data-message="Antenatal counselling appointment selected.">Schedule Antenatal Visit</button></div></article>
-        </div></section>
+        <!-- Specialist Appointment Booking -->
+        <section id="appointments" class="reveal rounded-2xl bg-white p-5 shadow-sm border border-slate-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[10px] font-bold uppercase tracking-wider text-teal">Specialist Care OPD &amp; Virtual</p>
+              <h2 class="display mt-1 text-lg font-bold text-navy">Book Specialist Consultation</h2>
+            </div>
+            <span class="rounded-full bg-ice px-3 py-1 text-[10px] font-bold text-navy">Hospital OPD</span>
+          </div>
+          <div class="mt-4 flex gap-2 overflow-x-auto text-[11px]">
+            <button class="rounded-full bg-navy px-3.5 py-1.5 font-bold text-white">Obstetrics &amp; Gynaecology</button>
+            <button class="rounded-full bg-slate-100 px-3.5 py-1.5 font-semibold text-slate-600 hover:bg-slate-200 transition">Cardiology Sciences</button>
+            <button class="rounded-full bg-slate-100 px-3.5 py-1.5 font-semibold text-slate-600 hover:bg-slate-200 transition">Paediatrics</button>
+          </div>
+          <div class="mt-4 space-y-4">
+            <article class="flex flex-col gap-3 rounded-xl border border-slate-100 p-3.5 sm:flex-row hover:border-teal-200 transition bg-slate-50/40">
+              <div class="h-20 w-20 shrink-0 rounded-xl bg-emerald-50 p-2 text-center text-3xl flex items-center justify-center">👩‍⚕️</div>
+              <div class="flex-1">
+                <div class="flex justify-between gap-2">
+                  <div>
+                    <h3 class="font-bold text-navy">Dr. Ulhas Damale</h3>
+                    <p class="text-[11px] text-teal font-semibold">MD, DGO, FICOG • 28+ Years Experience</p>
+                    <p class="mt-0.5 text-[11px] text-slate-500">Lead Obstetrician &amp; Fetal Medicine Specialist</p>
+                  </div>
+                  <strong class="text-xs text-navy font-bold">₹800</strong>
+                </div>
+                <p class="mt-2 text-[10px] text-slate-500">Wing B, 2nd Fl, Suite 208 • NABH Certified Protocol</p>
+                <p class="mt-2.5 text-[11px] font-bold text-slate-700">Available slots today</p>
+                <div class="slot-list mt-1.5 flex flex-wrap gap-2" data-doctor="damale">
+                  <button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal transition hover:scale-105" data-slot="10:30 AM">10:30 AM</button>
+                  <button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal transition hover:scale-105" data-slot="11:15 AM">11:15 AM</button>
+                  <button class="slot-button rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[10px] font-bold text-teal transition hover:scale-105" data-slot="12:00 PM">12:00 PM</button>
+                </div>
+                <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+                  <span class="slot-count rounded-lg bg-ice px-2.5 py-1 text-[10px] font-bold text-secondary">3 free slots</span>
+                  <button class="book-slot rounded-lg bg-teal hover:bg-secondary px-3.5 py-1.5 text-[11px] font-bold text-white transition shadow-sm" data-doctor="Dr. Ulhas Damale">Book Selected Slot</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="flex flex-col gap-3 rounded-xl border border-slate-100 p-3.5 sm:flex-row hover:border-blue-200 transition bg-slate-50/40">
+              <div class="h-20 w-20 shrink-0 rounded-xl bg-blue-50 p-2 text-center text-3xl flex items-center justify-center">👨‍⚕️</div>
+              <div class="flex-1">
+                <div class="flex justify-between gap-2">
+                  <div>
+                    <h3 class="font-bold text-navy">Dr. Bhupendra Patil</h3>
+                    <p class="text-[11px] text-teal font-semibold">MS, MCh (CTVS) • 22 Years Experience</p>
+                    <p class="mt-0.5 text-[11px] text-slate-500">Cardiovascular &amp; Thoracic Surgeon • OPD 204</p>
+                  </div>
+                  <strong class="text-xs text-navy font-bold">₹1,000</strong>
+                </div>
+                <p class="mt-2 text-[10px] text-slate-500">Next availability: Tomorrow • Video consult available</p>
+                <div class="mt-2.5 flex items-center justify-between gap-2">
+                  <span class="rounded-lg bg-ice px-2.5 py-1 text-[10px] font-bold text-secondary">Tomorrow 09:00 AM</span>
+                  <a href="appointments.html" class="rounded-lg bg-navy hover:bg-opacity-90 px-3.5 py-1.5 text-[11px] font-bold text-white transition shadow-sm">View Schedule</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Right Side: Fast-Track Pass & Telemetry Trends -->
         <div class="space-y-5">
-          <section class="reveal rounded-2xl bg-white p-5 shadow-sm"><div class="flex justify-between"><div><p class="text-[10px] font-bold uppercase tracking-wider text-teal">Fast-track OPD pass</p><h2 class="mt-1 text-lg font-bold text-navy">Antenatal check-up</h2></div><span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">Confirmed</span></div><div class="mt-4 rounded-xl bg-gradient-to-br from-navy to-[#174c7b] p-4 text-white"><p class="text-[10px] text-cyan-200">Dr. Ulhas Damale • Token #08</p><strong class="mt-2 block text-2xl">08</strong><p class="mt-2 text-xs">Thu, 24 Oct • 10:30 AM (Morning)</p><div class="mt-4 rounded-lg bg-white p-3 text-[10px] text-navy">▣ Self-check-in QR<br><span class="text-slate-500">Scan at Aster Aadhar Kiosk</span></div></div><div class="mt-3 flex gap-2"><button class="action flex-1 rounded-lg bg-ice py-2 text-[10px] font-bold text-navy" data-message="Hospital map opened.">Hospital Map</button><button class="action flex-1 rounded-lg bg-ice py-2 text-[10px] font-bold text-navy" data-message="Appointment reschedule options opened.">Reschedule</button></div></section>
-          <section class="reveal rounded-2xl bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><div><p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Weekly telemetry</p><h2 class="mt-1 text-lg font-bold text-navy">Maternal Vitals & Trends</h2></div><span class="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-bold text-teal">28-Week Target</span></div><div class="mt-4 grid grid-cols-2 gap-3"><div class="rounded-lg bg-slate-50 p-3"><p class="text-[10px] text-slate-500">Blood pressure</p><strong class="block text-xl text-navy">116/74</strong><span class="text-[10px] text-emerald-600">Safe range</span></div><div class="rounded-lg bg-slate-50 p-3"><p class="text-[10px] text-slate-500">Weight gain</p><strong class="block text-xl text-navy">+8.4 kg</strong><span class="text-[10px] text-slate-500">2nd trimester climb</span></div></div><div class="mt-3 h-12 rounded-lg bg-cyan-50 p-2 text-xs text-teal">╱╲╱╲╱╲╱╲╱╲╱╲╱╲</div></section>
-          <section class="reveal rounded-xl bg-rose-50 p-4"><div class="flex items-center justify-between"><span class="text-xs font-bold text-rose-700">Emergency triage line</span><button class="action rounded-lg bg-rose-600 px-3 py-2 text-[10px] font-bold text-white" data-message="Calling emergency triage line.">Call now</button></div><p class="mt-2 text-lg font-bold text-rose-700">+91-9158909090</p></section>
+          <!-- Fast-Track OPD Pass -->
+          <section class="reveal rounded-2xl bg-white p-5 shadow-sm border border-slate-100">
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-teal">Fast-Track OPD Pass</p>
+                <h2 class="mt-0.5 text-base font-bold text-navy">Antenatal Check-up</h2>
+              </div>
+              <span class="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">Confirmed</span>
+            </div>
+            <div class="mt-4 rounded-xl bg-gradient-to-br from-navy via-[#0d3b66] to-secondary p-4 text-white shadow-md relative overflow-hidden">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-[10px] text-cyan-200">Dr. Ulhas Damale • OPD Wing B</p>
+                  <strong class="mt-1 block text-3xl font-extrabold tracking-tight">TOKEN #08</strong>
+                  <p class="mt-1 text-xs text-blue-100">Thu, 24 Oct • 10:30 AM</p>
+                </div>
+                <!-- Interactive Glowing QR Code -->
+                <div id="qr-trigger-box" class="p-2 bg-white rounded-lg cursor-pointer qr-glow" title="Click to enlarge QR">
+                  <svg class="w-12 h-12 text-navy" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v4h-4v-4zm-4 4h4v4h-4v-4zm4 0h4v4h-4v-4zm-4-4h4v4h-4v-4z"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="text-[9px] text-blue-200 mt-3 pt-2 border-t border-white/10">Scan at Aster Aadhar Self-Check-in Kiosk for automatic queue call</p>
+            </div>
+            <div class="mt-3 flex gap-2">
+              <button class="action flex-1 rounded-lg bg-ice hover:bg-blue-100 py-2 text-[10px] font-bold text-navy transition" data-message="Campus Indoor Wayfinding Map opened.">Hospital Map</button>
+              <button class="action flex-1 rounded-lg bg-ice hover:bg-blue-100 py-2 text-[10px] font-bold text-navy transition" data-message="Reschedule calendar loaded.">Reschedule</button>
+            </div>
+          </section>
+
+          <!-- Weekly Telemetry with Animated SVG Sparkline -->
+          <section class="reveal rounded-2xl bg-white p-5 shadow-sm border border-slate-100">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Weekly Telemetry</p>
+                <h2 class="mt-0.5 text-base font-bold text-navy">Maternal Vitals &amp; Trends</h2>
+              </div>
+              <span class="rounded-full bg-cyan-50 px-2.5 py-0.5 text-[10px] font-bold text-teal">28-Week Safe</span>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2.5">
+              <div class="rounded-xl bg-slate-50 p-3 border border-slate-100">
+                <p class="text-[10px] text-slate-500 font-semibold">Blood Pressure</p>
+                <strong class="block text-lg font-bold text-navy">116/74</strong>
+                <span class="text-[10px] text-emerald-600 font-bold">Safe normotensive</span>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 border border-slate-100">
+                <p class="text-[10px] text-slate-500 font-semibold">Weight Gain</p>
+                <strong class="block text-lg font-bold text-navy">+8.4 kg</strong>
+                <span class="text-[10px] text-slate-500 font-semibold">Optimal trimester curve</span>
+              </div>
+            </div>
+            <!-- Animated SVG Telemetry Waveform -->
+            <div class="mt-3 p-2 bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl border border-teal-100">
+              <svg class="w-full h-12" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="sparkline-line" d="M0 30 Q30 35 50 20 T100 22 T150 12 T200 18" stroke="#009A84" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <circle cx="200" cy="18" r="4" fill="#009A84" class="animate-ping"/>
+                <circle cx="200" cy="18" r="3" fill="#062d5b"/>
+              </svg>
+            </div>
+          </section>
         </div>
       </div>
-      <section id="reports" class="reveal rounded-2xl bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><div><p class="text-[10px] font-bold uppercase tracking-wider text-teal">NABH accredited diagnostics</p><h2 class="display mt-1 text-lg font-bold text-navy">Reports & Imaging Vault</h2></div><button class="action text-[10px] font-bold text-teal" data-message="Full report history opened.">View Full Lab History →</button></div><div class="mt-4 grid gap-3 md:grid-cols-3"><article class="rounded-xl bg-ice p-4"><h3 class="text-sm font-bold text-navy">Fetal Well-being & Growth Scan</h3><p class="mt-2 text-[10px] text-slate-500">Date: 12 Oct 2024 • Normal findings</p><p class="mt-2 text-[11px] text-slate-600">Estimated fetal weight: 1,180 gm • Placenta Grade II anterior.</p><button class="action mt-3 rounded-lg bg-white px-3 py-2 text-[10px] font-bold text-navy" data-message="PDF report download started.">Download PDF</button></article><article class="rounded-xl bg-ice p-4"><h3 class="text-sm font-bold text-navy">Comprehensive Antenatal Blood Panel</h3><p class="mt-2 text-[10px] text-slate-500">Doctor verified • 08 Oct 2024</p><p class="mt-2 text-[11px] text-slate-600">Hb 11.8 g/dL • OGTT normal • Platelets 210,000.</p><button class="action mt-3 rounded-lg bg-navy px-3 py-2 text-[10px] font-bold text-white" data-message="NABL report download started.">Download NABL Report</button></article><article class="rounded-xl bg-cyan-50 p-4"><h3 class="text-sm font-bold text-navy">2D Echocardiogram with Doppler</h3><p class="mt-2 text-[10px] text-slate-500">Consultant: Dr. Bhupendra Patil • LVEF 58%</p><p class="mt-2 text-[11px] text-slate-600">Normal systolic function with no regional wall motion abnormalities.</p><button class="action mt-3 rounded-lg bg-navy px-3 py-2 text-[10px] font-bold text-white" data-message="Echo report opened for review.">Switch & Review</button></article></div></section>
-      <section id="prescriptions" class="reveal rounded-2xl bg-cyan-50 p-5 shadow-sm"><div class="flex flex-wrap items-center justify-between gap-3"><div><p class="text-[10px] font-bold uppercase tracking-wider text-teal">Active care plan</p><h2 class="display mt-1 text-lg font-bold text-navy">Active Antenatal Prescriptions (3 Meds)</h2><p class="mt-1 text-[11px] text-slate-600">Tab. Orofer XT (Iron) • Tab. Shelcal 500 • Prenatal DHA • Refill due in 6 days</p></div><button class="action rounded-lg bg-teal px-4 py-2 text-[10px] font-bold text-white" data-message="Refill request sent to Aster pharmacy.">Request Refill</button></div></section>
-      <section id="billing" class="reveal rounded-2xl bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><div><p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Insurance & billing</p><h2 class="mt-1 text-lg font-bold text-navy">Coverage at a glance</h2></div><span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">TPA Active</span></div><div class="mt-3 grid gap-3 text-xs sm:grid-cols-3"><div class="rounded-lg bg-slate-50 p-3"><span class="text-slate-400">Policy</span><strong class="mt-1 block text-navy">Star Health ••• 4812</strong></div><div class="rounded-lg bg-slate-50 p-3"><span class="text-slate-400">Available cover</span><strong class="mt-1 block text-navy">₹3,42,000</strong></div><button class="action rounded-lg bg-ice p-3 text-left font-bold text-navy" data-message="Billing and insurance desk opened.">View billing details →</button></div></section>
+
+      <!-- Reports & Imaging Vault -->
+      <section id="reports" class="reveal rounded-2xl bg-white p-5 shadow-sm border border-slate-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-teal">NABH Accredited Diagnostics</p>
+            <h2 class="display mt-1 text-lg font-bold text-navy">Reports &amp; Imaging Vault</h2>
+          </div>
+          <button class="action text-xs font-bold text-teal hover:underline" data-message="Full historical lab report archive opened.">View Full Lab History →</button>
+        </div>
+        <div class="mt-4 grid gap-3 md:grid-cols-3">
+          <article class="rounded-xl bg-ice p-4 border border-blue-100 card-hover">
+            <h3 class="text-xs font-bold text-navy">Fetal Well-being &amp; Growth Scan</h3>
+            <p class="mt-1 text-[10px] text-slate-500">Date: 12 Oct 2024 • Normal findings</p>
+            <p class="mt-2 text-[11px] text-slate-600">Estimated fetal weight: 1,180 gm • Placenta Grade II anterior.</p>
+            <button class="download-sim-btn mt-3 w-full rounded-lg bg-white border border-blue-200 px-3 py-2 text-[10px] font-bold text-navy hover:bg-blue-50 transition flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">download</span>
+              <span>Download Signed PDF</span>
+            </button>
+          </article>
+          <article class="rounded-xl bg-ice p-4 border border-blue-100 card-hover">
+            <h3 class="text-xs font-bold text-navy">Antenatal Comprehensive Blood Panel</h3>
+            <p class="mt-1 text-[10px] text-slate-500">Doctor verified • 08 Oct 2024</p>
+            <p class="mt-2 text-[11px] text-slate-600">Hb 11.8 g/dL • OGTT normal • Platelets 210,000.</p>
+            <button class="download-sim-btn mt-3 w-full rounded-lg bg-navy text-white px-3 py-2 text-[10px] font-bold hover:bg-opacity-90 transition flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">download</span>
+              <span>Download NABL Report</span>
+            </button>
+          </article>
+          <article class="rounded-xl bg-cyan-50 p-4 border border-cyan-100 card-hover">
+            <h3 class="text-xs font-bold text-navy">2D Echocardiogram with Doppler</h3>
+            <p class="mt-1 text-[10px] text-slate-500">Consultant: Dr. Bhupendra Patil • LVEF 58%</p>
+            <p class="mt-2 text-[11px] text-slate-600">Normal systolic function with no wall motion abnormalities.</p>
+            <button class="action mt-3 w-full rounded-lg bg-navy text-white px-3 py-2 text-[10px] font-bold hover:bg-opacity-90 transition flex items-center justify-center gap-1" data-message="Echo review mode opened.">
+              <span class="material-symbols-outlined text-[14px]">visibility</span>
+              <span>Review Echo Cine</span>
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <!-- Prescriptions & Care Plan -->
+      <section id="prescriptions" class="reveal rounded-2xl bg-gradient-to-r from-cyan-50 to-blue-50 p-5 shadow-sm border border-cyan-100">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-teal">Active Care Plan</p>
+            <h2 class="display mt-1 text-lg font-bold text-navy">Active Antenatal Prescriptions (3 Meds)</h2>
+            <p class="mt-1 text-xs text-slate-600">Tab. Orofer XT (Iron) • Tab. Shelcal 500 • Prenatal DHA • Refill due in 6 days</p>
+          </div>
+          <button class="action rounded-lg bg-teal hover:bg-secondary px-4 py-2.5 text-xs font-bold text-white transition shadow-sm flex items-center gap-1.5" data-message="Refill order sent directly to Aster Pharmacy. Free doorstep delivery confirmed.">
+            <span class="material-symbols-outlined text-[16px]">local_pharmacy</span>
+            <span>Order Doorstep Refill</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Billing & TPA -->
+      <section id="billing" class="reveal rounded-2xl bg-white p-5 shadow-sm border border-slate-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Insurance &amp; Billing</p>
+            <h2 class="mt-0.5 text-lg font-bold text-navy">Coverage at a Glance</h2>
+          </div>
+          <span class="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-[10px] font-bold text-emerald-700">TPA Active</span>
+        </div>
+        <div class="mt-3 grid gap-3 text-xs sm:grid-cols-3">
+          <div class="rounded-xl bg-slate-50 p-3.5 border border-slate-100">
+            <span class="text-slate-400 text-[10px] font-bold uppercase">Policy</span>
+            <strong class="mt-1 block text-navy font-bold">Star Health Comprehensive ••• 4812</strong>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-3.5 border border-slate-100">
+            <span class="text-slate-400 text-[10px] font-bold uppercase">Available Sum Insured</span>
+            <strong class="mt-1 block text-emerald-700 font-bold text-sm">₹3,42,000</strong>
+          </div>
+          <button class="action rounded-xl bg-ice hover:bg-blue-100 p-3.5 text-left font-bold text-navy transition border border-blue-100" data-message="Billing desk and cashless claim tracker opened.">
+            <span>View Claim History →</span>
+          </button>
+        </div>
+      </section>
     </main>
   </div>
-  <div id="toast" class="toast fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 rounded-xl bg-navy px-4 py-3 text-sm font-bold text-white shadow-xl" role="status"></div>
-  <script>(()=>{const toast=document.getElementById('toast');const notify=m=>{toast.textContent=m;toast.classList.remove('hidden');clearTimeout(window.t);window.t=setTimeout(()=>toast.classList.add('hidden'),2800)};document.querySelectorAll('.action').forEach(b=>b.addEventListener('click',()=>notify(b.dataset.message||'Action completed.')));document.querySelectorAll('.slot-list').forEach(list=>{list.querySelector('.slot-button')?.classList.add('ring-2','ring-navy');list.querySelectorAll('.slot-button').forEach(slot=>slot.addEventListener('click',()=>{list.querySelectorAll('.slot-button').forEach(item=>item.classList.remove('ring-2','ring-navy'));slot.classList.add('ring-2','ring-navy');}));});document.querySelectorAll('.book-slot').forEach(button=>button.addEventListener('click',()=>{const list=button.closest('.flex-1')?.querySelector('.slot-list');const selected=list?.querySelector('.ring-2');if(!selected){notify('Select one of the remaining free slots first.');return;}const slot=selected.dataset.slot;selected.remove();const count=list.querySelectorAll('.slot-button').length;const countLabel=button.closest('.flex-1')?.querySelector('.slot-count');if(countLabel)countLabel.textContent=`${count} free slot${count===1?'':'s'}`;button.disabled=true;button.classList.add('opacity-60','cursor-not-allowed');notify(`Appointment confirmed with ${button.dataset.doctor} at ${slot}.`);if(!count){list.innerHTML='<span class="text-[10px] font-semibold text-rose-600">No free slots remaining</span>';}}));document.getElementById('patient-logout')?.addEventListener('click',()=>{window.location.href='index.html';});})();</script>
+
+  <!-- QR EXPANDER MODAL -->
+  <div id="qr-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-navy/70 p-4 backdrop-blur-sm">
+    <div class="max-w-xs w-full rounded-2xl bg-white p-6 shadow-2xl text-center">
+      <h3 class="font-bold text-navy text-base">Aster Aadhar Fast-Pass</h3>
+      <p class="text-xs text-slate-500 mt-1">Token #08 • Dr. Ulhas Damale</p>
+      <div class="my-4 p-4 bg-slate-50 rounded-xl inline-block border border-slate-200">
+        <svg class="w-36 h-36 mx-auto text-navy" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v4h-4v-4zm-4 4h4v4h-4v-4zm4 0h4v4h-4v-4zm-4-4h4v4h-4v-4z"/>
+        </svg>
+      </div>
+      <button id="close-qr-modal" class="w-full py-2.5 rounded-xl bg-navy text-white font-bold text-xs hover:bg-opacity-90 transition">Close</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white shadow-2xl flex items-center gap-2" role="status">
+    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+    <span id="toast-text">Action completed</span>
+  </div>
+
+  <script>
+    (() => {
+      // Audio Chime
+      const playChime = () => {
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now); // D5
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        } catch (e) {
+          console.warn(e);
+        }
+      };
+
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      const notify = m => {
+        if (toastText) toastText.textContent = m;
+        toast.classList.remove('hidden');
+        playChime();
+        clearTimeout(window.t);
+        window.t = setTimeout(() => toast.classList.add('hidden'), 2800);
+      };
+
+      document.querySelectorAll('.action').forEach(b => {
+        b.addEventListener('click', () => notify(b.dataset.message || 'Action completed.'));
+      });
+
+      // Interactive Fetal Kick Counter
+      let kickCount = 14;
+      const kickVal = document.getElementById('kick-counter-val');
+      const logKickBtn = document.getElementById('log-kick-btn');
+      logKickBtn?.addEventListener('click', () => {
+        kickCount++;
+        if (kickVal) {
+          kickVal.textContent = kickCount;
+          kickVal.classList.add('scale-125', 'text-teal');
+          setTimeout(() => kickVal.classList.remove('scale-125', 'text-teal'), 250);
+        }
+        notify(`Fetal kick #${kickCount} recorded at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.`);
+      });
+
+      // QR Modal
+      const qrTrigger = document.getElementById('qr-trigger-box');
+      const qrModal = document.getElementById('qr-modal');
+      const closeQrModal = document.getElementById('close-qr-modal');
+      qrTrigger?.addEventListener('click', () => {
+        qrModal?.classList.remove('hidden');
+        qrModal?.classList.add('flex');
+      });
+      closeQrModal?.addEventListener('click', () => {
+        qrModal?.classList.add('hidden');
+        qrModal?.classList.remove('flex');
+      });
+      qrModal?.addEventListener('click', e => {
+        if (e.target === qrModal) {
+          qrModal.classList.add('hidden');
+          qrModal.classList.remove('flex');
+        }
+      });
+
+      // Download Simulation
+      document.querySelectorAll('.download-sim-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">progress_activity</span><span>Downloading...</span>';
+          setTimeout(() => {
+            btn.innerHTML = '<span class="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span><span>Downloaded</span>';
+            notify('Signed report downloaded to your device.');
+          }, 1200);
+        });
+      });
+
+      // Slot Picker
+      document.querySelectorAll('.slot-list').forEach(list => {
+        list.querySelector('.slot-button')?.classList.add('ring-2', 'ring-navy');
+        list.querySelectorAll('.slot-button').forEach(slot => {
+          slot.addEventListener('click', () => {
+            list.querySelectorAll('.slot-button').forEach(item => item.classList.remove('ring-2', 'ring-navy'));
+            slot.classList.add('ring-2', 'ring-navy');
+          });
+        });
+      });
+
+      document.querySelectorAll('.book-slot').forEach(button => {
+        button.addEventListener('click', () => {
+          const list = button.closest('.flex-1')?.querySelector('.slot-list');
+          const selected = list?.querySelector('.ring-2');
+          if (!selected) {
+            notify('Please select one of the available time slots first.');
+            return;
+          }
+          const slot = selected.dataset.slot;
+          selected.remove();
+          const count = list.querySelectorAll('.slot-button').length;
+          const countLabel = button.closest('.flex-1')?.querySelector('.slot-count');
+          if (countLabel) countLabel.textContent = `${count} free slot${count === 1 ? '' : 's'}`;
+          button.disabled = true;
+          button.classList.add('opacity-60', 'cursor-not-allowed');
+          notify(`Appointment confirmed with ${button.dataset.doctor} at ${slot}.`);
+          if (!count) {
+            list.innerHTML = '<span class="text-[10px] font-semibold text-rose-600">No free slots remaining</span>';
+          }
+        });
+      });
+
+      document.getElementById('patient-logout')?.addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+    })();
+  </script>
 </body>
 </html>

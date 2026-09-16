@@ -1,65 +1,630 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Prescription | Aster Aadhar</title>
+  <title>E-Prescription & Clinical Rx Portal | Aster Aadhar Hospital</title>
+  <meta name="description" content="Official Electronic Prescription and Drug Interaction Safety portal for Aster Aadhar Hospital clinicians.">
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>body{font-family:Inter,Arial,sans-serif}.toast{animation:toast .25s ease-out}@keyframes toast{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}</style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00234d',
+            'primary-dark': '#001835',
+            'primary-light': '#003677',
+            secondary: '#006876',
+            teal: '#009A84',
+            'teal-light': '#e0f5f2',
+            danger: '#E11D48',
+            warning: '#D97706',
+            success: '#059669',
+          },
+          fontFamily: {
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <style>
+    body { font-family: Inter, sans-serif; }
+    h1, h2, h3, h4, .font-display { font-family: "Plus Jakarta Sans", sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .font-signature { font-family: 'Caveat', cursive; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+    @keyframes pulseAlert {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.02); opacity: 0.92; }
+    }
+    .pulse-danger { animation: pulseAlert 2.5s infinite ease-in-out; }
+
+    .toast-anim {
+      animation: toastIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translate(-50%, 20px) scale(0.95); }
+      to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+
+    /* Print Stylesheet for Official Letterhead */
+    @media print {
+      body { background: white !important; color: #0f172a !important; }
+      header, .no-print, #toast, .action-toolbar { display: none !important; }
+      .print-container { box-shadow: none !important; border: 1px solid #cbd5e1 !important; margin: 0 !important; width: 100% !important; }
+      .print-watermark { display: block !important; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .pulse-danger, .toast-anim {
+        animation: none !important;
+      }
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-800">
-  <header class="border-b border-slate-200 bg-white px-5 py-4">
-    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4">
-      <div><p class="text-sm font-extrabold text-[#00234d]">ASTER AADHAR</p><p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Doctor E-Prescription</p></div>
-      <a href="appointments.html" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-[#00234d]">Back to Appointments</a>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col selection:bg-teal selection:text-white">
+
+  <!-- Main Navigation Header -->
+  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md px-4 py-3.5 shadow-sm transition-all md:px-8 no-print">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      
+      <!-- Brand & Doctor Identity -->
+      <a href="docdash.html" class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary via-secondary to-teal shadow-md text-white font-black">
+          <span class="material-symbols-outlined text-2xl">prescriptions</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display text-base font-extrabold tracking-tight text-primary">Aster Aadhar</span>
+            <span class="rounded bg-teal/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal">E-Prescription v3.2</span>
+          </div>
+          <p class="text-[11px] font-medium text-slate-500">Official Clinical Pharmacopeia & NABH Certified Dispensation</p>
+        </div>
+      </a>
+
+      <!-- Doctor Credentials & Navigation -->
+      <div class="flex items-center gap-3">
+        <div class="hidden text-right md:block">
+          <p class="text-xs font-bold text-primary">Dr. Bhupendra Patil, MCh, MS</p>
+          <p class="text-[10px] font-medium text-slate-500">Reg: MMC-2004-08971 • Dept. of Cardiac Sciences</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a href="appointments.html" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all">
+            <span class="material-symbols-outlined text-sm text-secondary">arrow_back</span>
+            <span>Appointments</span>
+          </a>
+          <a href="surgical-schedule.html" class="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all">
+            <span class="material-symbols-outlined text-sm text-teal">event_note</span>
+            <span>Surgical Schedule</span>
+          </a>
+          <a href="docdash.html" class="rounded-xl bg-primary px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-primary-light transition-all">
+            Dashboard
+          </a>
+        </div>
+      </div>
+
     </div>
   </header>
-  <main class="mx-auto max-w-6xl space-y-5 px-5 py-6">
-    <section class="rounded-2xl bg-[#00234d] p-6 text-white shadow-lg">
-      <p class="text-xs font-bold uppercase tracking-widest text-cyan-200">Finish consultation</p>
-      <h1 class="mt-2 text-2xl font-extrabold">Write E-Prescription</h1>
-      <p class="mt-2 text-sm text-blue-100">Complete and sign the prescription for the current patient.</p>
+
+  <!-- Main Body Content -->
+  <main class="mx-auto w-full max-w-7xl flex-1 space-y-6 px-4 py-6 md:px-8">
+    
+    <!-- Hero Banner with Consultation Context -->
+    <section class="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-dark to-slate-900 p-6 text-white shadow-xl md:p-8 no-print">
+      <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-teal/20 blur-3xl pointer-events-none"></div>
+      
+      <div class="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-teal/30 bg-teal/15 px-3 py-1 text-xs font-bold text-cyan-200">
+            <span class="material-symbols-outlined text-sm">verified_user</span>
+            <span>Active E-Consultation Order #RX-2026-9842</span>
+          </div>
+          <h1 class="mt-3 text-2xl font-extrabold tracking-tight md:text-3xl">
+            Digital E-Prescription & Pharmacopeia
+          </h1>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-blue-100">
+            Generate NABH-compliant digital prescriptions with real-time drug interaction safeguards, patient allergy verification, and tamper-evident cryptographic signature.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="btn-quick-repeat" class="flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white shadow backdrop-blur transition-all hover:bg-white/20">
+            <span class="material-symbols-outlined text-base">history</span>
+            <span>Load Past Rx</span>
+          </button>
+          <button id="btn-print-rx" class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-teal to-secondary px-5 py-2.5 text-xs font-bold text-white shadow-lg shadow-teal/30 transition-all hover:brightness-110 active:scale-95">
+            <span class="material-symbols-outlined text-base">print</span>
+            <span>Print Official Rx</span>
+          </button>
+        </div>
+      </div>
     </section>
-    <div class="grid gap-5 lg:grid-cols-[1.3fr_.7fr]">
-      <form id="prescription-form" class="rounded-2xl bg-white p-6 shadow-sm">
-        <div class="border-b border-slate-100 pb-4"><h2 class="text-lg font-bold text-[#00234d]">Mrs. Meera Mandhare</h2><p class="mt-1 text-xs text-slate-500">MRN-AAH-2023-1108 • 58y / F • Post-PTCA Day 45 review</p></div>
-        <div class="mt-5 grid gap-4 md:grid-cols-2">
-          <label class="text-xs font-bold">Diagnosis<textarea class="mt-2 h-28 w-full rounded-lg border-slate-200 bg-slate-50 p-3 text-xs" required>Stable post-PTCA follow-up; exertional fatigue.</textarea></label>
-          <label class="text-xs font-bold">Patient instructions<textarea class="mt-2 h-28 w-full rounded-lg border-slate-200 bg-slate-50 p-3 text-xs" required>Continue cardiac rehabilitation and return for review in 4 weeks.</textarea></label>
+
+    <!-- Drug Interaction Safety Alert Banner (Dynamic) -->
+    <section id="drug-interaction-alert" class="reveal pulse-danger rounded-2xl border-2 border-amber-500/50 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 p-4 shadow-md no-print">
+      <div class="flex items-start gap-3">
+        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500 text-white shadow">
+          <span class="material-symbols-outlined text-2xl">warning</span>
         </div>
-        <div class="mt-6 flex items-center justify-between"><h2 class="text-sm font-bold text-[#00234d]">Medicines</h2><button id="add-medicine" type="button" class="rounded-lg bg-cyan-50 px-3 py-2 text-xs font-bold text-[#006876]">+ Add medicine</button></div>
-        <div id="medicine-list" class="mt-3 space-y-2"></div>
-        <div class="mt-6 flex flex-wrap justify-end gap-2 border-t border-slate-100 pt-4"><button id="print" type="button" class="rounded-lg bg-slate-100 px-4 py-2.5 text-xs font-bold text-[#00234d]">Print preview</button><button class="rounded-lg bg-[#009A84] px-4 py-2.5 text-xs font-bold text-white" type="submit">Save & Sign Prescription</button></div>
-        <p id="status" class="mt-3 hidden text-right text-xs font-bold text-emerald-700"></p>
+        <div class="flex-1">
+          <div class="flex items-center gap-2">
+            <h4 class="text-sm font-bold text-amber-900">Clinical Pharmacopeia Safety Alert: CYP2C19 Interaction Advisory</h4>
+            <span class="rounded bg-amber-200/80 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-800">Moderate Severity</span>
+          </div>
+          <p class="mt-1 text-xs leading-relaxed text-amber-800">
+            Patient is prescribed <strong>Clopidogrel 75mg</strong>. Avoid co-administration with Omeprazole/Esomeprazole as it significantly diminishes antiplatelet activation. <strong>Pantoprazole 40mg</strong> or <strong>Rabeprazole</strong> is recommended as the preferred gastric cytoprotective agent.
+          </p>
+        </div>
+        <button id="btn-dismiss-alert" class="rounded-lg p-1 text-amber-700 hover:bg-amber-100">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Two-Column Prescription Workspace -->
+    <div class="grid gap-6 lg:grid-cols-[1.35fr_.65fr]">
+      
+      <!-- Left Column: Official Prescription Sheet & Form -->
+      <form id="prescription-form" class="print-container reveal space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-xl md:p-8">
+        
+        <!-- Official Hospital Letterhead (Visible in Print & Preview) -->
+        <div class="border-b-2 border-primary/20 pb-5">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white font-bold">
+                  <span class="material-symbols-outlined text-xl">local_hospital</span>
+                </div>
+                <div>
+                  <h2 class="font-display text-lg font-black text-primary tracking-tight">ASTER AADHAR HOSPITAL</h2>
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-secondary">Centre of Excellence in Cardiac & Critical Care</p>
+                </div>
+              </div>
+              <p class="mt-1 text-[11px] text-slate-500">R.S. No. 628, 'B' Ward, Near Shastri Nagar, Kolhapur - 416012 • 24x7 Helpline: 0231-6622555</p>
+            </div>
+
+            <div class="text-right">
+              <div class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">
+                <span class="material-symbols-outlined text-sm">verified</span>
+                <span>NABH Accredited</span>
+              </div>
+              <p class="mt-1 font-mono text-[10px] font-bold text-slate-400">Rx ID: #AAH-RX-2026-9842</p>
+              <p class="text-[10px] text-slate-500">Date: <strong class="text-slate-800">10 Sep 2026, 10:15 AM</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient Demographics & Vitals Banner -->
+        <div class="rounded-2xl border border-cyan-100 bg-cyan-50/40 p-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-display text-base font-bold text-primary">Mrs. Meera Mandhare</h3>
+                <span class="rounded bg-secondary/15 px-2 py-0.5 text-[11px] font-bold text-secondary">58y / Female</span>
+                <span class="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">⚠️ Penicillin / Sulfa Allergy</span>
+              </div>
+              <p class="mt-0.5 text-xs text-slate-500 font-mono">MRN: AAH-2023-1108 • UID: 9482-1108-9811 • OPD Cabin 204</p>
+            </div>
+
+            <div class="flex items-center gap-3 text-xs font-mono">
+              <div class="rounded-lg bg-white px-2.5 py-1 shadow-sm border border-slate-200 text-center">
+                <span class="block text-[9px] uppercase text-slate-400">Blood Pressure</span>
+                <strong class="text-primary font-bold">102 / 68</strong>
+              </div>
+              <div class="rounded-lg bg-white px-2.5 py-1 shadow-sm border border-slate-200 text-center">
+                <span class="block text-[9px] uppercase text-slate-400">Heart Rate</span>
+                <strong class="text-emerald-600 font-bold">88 bpm</strong>
+              </div>
+              <div class="rounded-lg bg-white px-2.5 py-1 shadow-sm border border-slate-200 text-center">
+                <span class="block text-[9px] uppercase text-slate-400">SpO2</span>
+                <strong class="text-cyan-600 font-bold">96%</strong>
+              </div>
+              <div class="rounded-lg bg-white px-2.5 py-1 shadow-sm border border-slate-200 text-center">
+                <span class="block text-[9px] uppercase text-slate-400">Weight</span>
+                <strong class="text-slate-700 font-bold">64.5 kg</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clinical Diagnosis & Chief Impression -->
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Primary Clinical Diagnosis <span class="text-rose-500">*</span>
+            </label>
+            <textarea required rows="2" class="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-800 placeholder-slate-400 focus:border-teal focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal">Post-PTCA (DES to LAD) Day 45 Review • Stable Hemodynamics • Exertional dyspnea NYHA Class I (Resolved).</textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Dietary & Lifestyle Advice
+            </label>
+            <textarea rows="2" class="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-800 placeholder-slate-400 focus:border-teal focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal">Low sodium diet (&lt;2g/day) • 30 min gentle aerobic walk • Avoid heavy weightlifting • Lipid profile & ECG at 90 days.</textarea>
+          </div>
+        </div>
+
+        <!-- Quick Formulary Shortcuts (Click-to-Add) -->
+        <div class="no-print space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Quick Cardiac Formulary:</span>
+            <span class="text-[10px] text-teal font-semibold">Click chip to add medicine</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" class="btn-formulary-chip rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-teal hover:bg-teal hover:text-white transition-all" data-name="Aspirin (Ecosprin)" data-dose="75 mg" data-freq="Once daily (Morning)" data-dur="30 days" data-inst="After meals">
+              + Aspirin 75mg
+            </button>
+            <button type="button" class="btn-formulary-chip rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-teal hover:bg-teal hover:text-white transition-all" data-name="Atorvastatin (Atorva)" data-dose="40 mg" data-freq="Once daily (Bedtime)" data-dur="30 days" data-inst="At night">
+              + Atorvastatin 40mg
+            </button>
+            <button type="button" class="btn-formulary-chip rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-teal hover:bg-teal hover:text-white transition-all" data-name="Clopidogrel (Deplatt)" data-dose="75 mg" data-freq="Once daily (Noon)" data-dur="30 days" data-inst="After lunch">
+              + Clopidogrel 75mg
+            </button>
+            <button type="button" class="btn-formulary-chip rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-teal hover:bg-teal hover:text-white transition-all" data-name="Metoprolol Succinate (Betaloc)" data-dose="25 mg" data-freq="Once daily (Morning)" data-dur="30 days" data-inst="Empty stomach">
+              + Metoprolol 25mg
+            </button>
+            <button type="button" class="btn-formulary-chip rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-teal hover:bg-teal hover:text-white transition-all" data-name="Pantoprazole (Pan)" data-dose="40 mg" data-freq="Once daily (Morning)" data-dur="30 days" data-inst="30 min before breakfast">
+              + Pantoprazole 40mg
+            </button>
+            <button type="button" class="btn-formulary-chip rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-teal hover:bg-teal hover:text-white transition-all" data-name="Telmisartan (Telma)" data-dose="40 mg" data-freq="Once daily (Morning)" data-dur="30 days" data-inst="After breakfast">
+              + Telmisartan 40mg
+            </button>
+          </div>
+        </div>
+
+        <!-- Medicine Table Section (Rx) -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-serif text-2xl font-black text-primary italic">℞</span>
+              <h3 class="font-display text-sm font-bold text-primary">Prescribed Medicines & Dosage Schedule</h3>
+            </div>
+            <button type="button" id="btn-add-row" class="no-print inline-flex items-center gap-1 rounded-xl bg-teal/15 px-3 py-1.5 text-xs font-bold text-teal hover:bg-teal hover:text-white transition-all">
+              <span class="material-symbols-outlined text-sm">add</span>
+              <span>Add Medicine Row</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Medicine List -->
+          <div id="medicine-list" class="space-y-2.5">
+            <!-- Rows injected by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Investigation & Follow-up Advices -->
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Diagnostic Tests Advised
+            </label>
+            <input type="text" value="2D Echocardiography (LVEF), Lipid Profile, Serum Creatinine" class="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-800 focus:border-teal focus:bg-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Next Review Appointment
+            </label>
+            <input type="text" value="4 Weeks (08 October 2026, 10:00 AM) or SOS in emergency" class="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-800 focus:border-teal focus:bg-white focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Interactive Cryptographic Signature Pad & Hospital Stamp -->
+        <div class="border-t-2 border-slate-100 pt-5">
+          <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            
+            <!-- Security Verification Pill -->
+            <div class="space-y-1 text-[11px] text-slate-500">
+              <div class="flex items-center gap-1.5 font-bold text-emerald-700">
+                <span class="material-symbols-outlined text-base">lock</span>
+                <span>Digitally Signed with SHA-256 Healthcare Certificate</span>
+              </div>
+              <p>Prescription token is synchronized with Aster Pharmacy & EMR archive.</p>
+            </div>
+
+            <!-- Doctor Digital Signature Box -->
+            <div class="text-right">
+              <div id="signature-stamp" class="inline-block rounded-2xl border-2 border-dashed border-teal/40 bg-teal/5 p-4 text-center transition-all">
+                <div class="font-signature text-2xl text-primary font-bold">Dr. Bhupendra Patil</div>
+                <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-600">Dr. Bhupendra Patil, MCh (Cardio)</div>
+                <div class="text-[9px] font-mono text-teal font-semibold">MMC-2004-08971 • Certified Digital Seal</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Action Toolbar -->
+        <div class="action-toolbar flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5 no-print">
+          <div class="flex items-center gap-2 text-xs text-slate-500">
+            <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+            <span>Autosaved to patient chart</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button type="button" id="btn-clear-rx" class="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-all">
+              Clear Form
+            </button>
+            <button type="submit" class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-teal to-secondary px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-teal/20 hover:brightness-110 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-base">verified</span>
+              <span>Save & Sign Prescription</span>
+            </button>
+          </div>
+        </div>
+
       </form>
-      <aside class="rounded-2xl bg-white p-6 shadow-sm">
-        <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#006876]">Patient history</p><h2 class="mt-1 text-lg font-bold text-[#00234d]">Previous prescriptions</h2>
-        <div class="mt-4 space-y-3">
-          <article class="rounded-xl bg-slate-50 p-4"><div class="flex justify-between text-xs font-bold"><span>12 Aug 2026</span><span class="text-slate-400">Dr. Patil</span></div><p class="mt-2 text-xs font-semibold">Post-PTCA follow-up</p><p class="mt-1 text-[11px] text-slate-500">Aspirin 75 mg • Atorvastatin 40 mg • Clopidogrel 75 mg</p><button class="use-history mt-3 rounded-lg bg-cyan-50 px-3 py-1.5 text-[10px] font-bold text-[#006876]" type="button" data-medicines="Aspirin 75 mg|1 tablet|Once daily|30 days;Atorvastatin 40 mg|1 tablet|Once daily|30 days;Clopidogrel 75 mg|1 tablet|Once daily|30 days">Use medicines</button></article>
-          <article class="rounded-xl bg-slate-50 p-4"><div class="flex justify-between text-xs font-bold"><span>18 Jun 2026</span><span class="text-slate-400">Dr. Patil</span></div><p class="mt-2 text-xs font-semibold">Coronary artery disease</p><p class="mt-1 text-[11px] text-slate-500">Metoprolol 25 mg • Pantoprazole 40 mg</p><button class="use-history mt-3 rounded-lg bg-cyan-50 px-3 py-1.5 text-[10px] font-bold text-[#006876]" type="button" data-medicines="Metoprolol 25 mg|1 tablet|Twice daily|30 days;Pantoprazole 40 mg|1 tablet|Once daily|30 days">Use medicines</button></article>
-        </div>
-        <p class="mt-5 text-[10px] leading-relaxed text-slate-400">Previous medicines are for reference only. Confirm the current diagnosis, dose, and contraindications before signing.</p>
+
+      <!-- Right Column: Patient History & Active Drug Interactions -->
+      <aside class="space-y-6 no-print">
+        
+        <!-- Past Prescriptions Card -->
+        <article class="reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-secondary">Patient History</span>
+              <h3 class="text-base font-bold text-primary">Past Prescriptions</h3>
+            </div>
+            <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600">2 Archived</span>
+          </div>
+
+          <!-- Past Rx 1 -->
+          <div class="rounded-2xl border border-cyan-100 bg-cyan-50/30 p-4 space-y-2 transition-all hover:border-cyan-300">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="text-primary">12 Aug 2026 (Post-PTCA Discharge)</span>
+              <span class="text-slate-400 font-normal">Dr. Patil</span>
+            </div>
+            <p class="text-[11px] text-slate-600">
+              Aspirin 75mg • Atorvastatin 40mg • Clopidogrel 75mg • Pantoprazole 40mg
+            </p>
+            <div class="pt-1">
+              <button type="button" class="use-past-rx text-[11px] font-bold text-secondary hover:text-primary flex items-center gap-1" data-rx="Aspirin 75 mg|75 mg|Once daily (Morning)|30 days|After meals;Atorvastatin 40 mg|40 mg|Once daily (Bedtime)|30 days|At night;Clopidogrel 75 mg|75 mg|Once daily (Noon)|30 days|After lunch;Pantoprazole 40 mg|40 mg|Once daily (Morning)|30 days|30 min before breakfast">
+                <span class="material-symbols-outlined text-sm">content_paste_go</span>
+                <span>Copy medicines into current Rx ›</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Past Rx 2 -->
+          <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-2 transition-all hover:border-slate-300">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="text-primary">18 Jun 2026 (Pre-Op Assessment)</span>
+              <span class="text-slate-400 font-normal">Dr. Patil</span>
+            </div>
+            <p class="text-[11px] text-slate-600">
+              Metoprolol 25mg • Rosuvastatin 20mg • Pantoprazole 40mg
+            </p>
+            <div class="pt-1">
+              <button type="button" class="use-past-rx text-[11px] font-bold text-secondary hover:text-primary flex items-center gap-1" data-rx="Metoprolol Succinate 25 mg|25 mg|Once daily (Morning)|30 days|Empty stomach;Rosuvastatin 20 mg|20 mg|Once daily (Bedtime)|30 days|At night;Pantoprazole 40 mg|40 mg|Once daily (Morning)|30 days|30 min before breakfast">
+                <span class="material-symbols-outlined text-sm">content_paste_go</span>
+                <span>Copy medicines into current Rx ›</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pharmacy & Dispensation Instructions Card -->
+        <article class="reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-xl space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <span class="material-symbols-outlined text-teal text-xl">local_pharmacy</span>
+            <h3 class="text-base font-bold text-primary">Aster In-House Pharmacy</h3>
+          </div>
+
+          <div class="space-y-3 text-xs text-slate-600">
+            <div class="flex items-center justify-between rounded-xl bg-slate-50 p-3">
+              <span>Ground Floor Counter 1 (Cardiac OPD)</span>
+              <span class="font-bold text-emerald-600">Open 24x7</span>
+            </div>
+            <div class="flex items-center justify-between rounded-xl bg-slate-50 p-3">
+              <span>Home Delivery via Aster Health App</span>
+              <span class="font-bold text-teal">Enabled</span>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Prescription barcode is readable at any licensed pharmacy across India under National Digital Health Mission (NDHM) guidelines.
+          </p>
+        </article>
+
       </aside>
+
     </div>
+
   </main>
-  <div id="toast" class="toast fixed bottom-6 left-1/2 hidden -translate-x-1/2 rounded-xl bg-[#00234d] px-4 py-3 text-sm font-bold text-white shadow-xl"></div>
+
+  <!-- Interactive Floating Toast -->
+  <div id="toast" class="toast-anim fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 items-center gap-3 rounded-2xl bg-primary px-5 py-3.5 text-sm font-semibold text-white shadow-2xl" role="status">
+    <span class="material-symbols-outlined text-teal text-xl">info</span>
+    <span id="toast-text">Prescription saved.</span>
+  </div>
+
+  <!-- Audio Synthesis & Interactive Prescription Engine -->
   <script>
     (() => {
-      const list = document.getElementById('medicine-list');
+      // 1. Web Audio Synthesizer
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function playChime(type = 'success') {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'sign') {
+          // Crisp harmonic triad chime (E5 -> G#5 -> B5)
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(659.25, now);
+          osc.frequency.setValueAtTime(830.61, now + 0.1);
+          osc.frequency.setValueAtTime(987.77, now + 0.2);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+          osc.start(now);
+          osc.stop(now + 0.6);
+        } else {
+          // Standard soft chime
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        }
+      }
+
+      // 2. Toast Notification
       const toast = document.getElementById('toast');
-      const notify = message => { toast.textContent = message; toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), 2500); };
-      const addRow = ([name = '', dose = '', frequency = 'Once daily', duration = '30 days'] = []) => {
+      const toastText = document.getElementById('toast-text');
+      let toastTimeout = null;
+
+      function notify(message, type = 'success') {
+        playChime(type);
+        toastText.textContent = message;
+        toast.classList.remove('hidden');
+        toast.classList.add('flex');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toast.classList.add('hidden');
+          toast.classList.remove('flex');
+        }, 3000);
+      }
+
+      // 3. Dynamic Medicine Rows Builder
+      const medicineList = document.getElementById('medicine-list');
+
+      function createMedicineRow(name = '', dose = '', freq = 'Once daily (Morning)', duration = '30 days', instructions = 'After meals') {
         const row = document.createElement('div');
-        row.className = 'medicine-row grid gap-2 rounded-xl bg-slate-50 p-3 md:grid-cols-[1.3fr_1fr_1fr_1fr_auto]';
-        row.innerHTML = `<input class="rounded-lg border-slate-200 px-3 py-2 text-xs" placeholder="Medicine name" value="${name}" required><input class="rounded-lg border-slate-200 px-3 py-2 text-xs" placeholder="Dose" value="${dose}" required><select class="rounded-lg border-slate-200 px-3 py-2 text-xs"><option ${frequency === 'Once daily' ? 'selected' : ''}>Once daily</option><option ${frequency === 'Twice daily' ? 'selected' : ''}>Twice daily</option><option ${frequency === 'After meals' ? 'selected' : ''}>After meals</option><option ${frequency === 'As needed' ? 'selected' : ''}>As needed</option></select><input class="rounded-lg border-slate-200 px-3 py-2 text-xs" placeholder="Duration" value="${duration}" required><button class="remove-row rounded-lg px-2 text-rose-600" type="button">✕</button>`;
-        list.appendChild(row);
-      };
-      addRow(['Aspirin 75 mg', '1 tablet', 'Once daily', '30 days']); addRow(['Atorvastatin 40 mg', '1 tablet', 'Once daily', '30 days']);
-      document.getElementById('add-medicine').addEventListener('click', () => addRow());
-      list.addEventListener('click', event => event.target.closest('.remove-row')?.closest('.medicine-row')?.remove());
-      document.querySelectorAll('.use-history').forEach(button => button.addEventListener('click', () => { list.innerHTML = ''; button.dataset.medicines.split(';').forEach(item => addRow(item.split('|'))); notify('Previous medicines loaded for editing.'); }));
-      document.getElementById('prescription-form').addEventListener('submit', event => { event.preventDefault(); document.getElementById('status').textContent = 'Prescription saved and signed successfully.'; document.getElementById('status').classList.remove('hidden'); notify('E-prescription saved.'); });
-      document.getElementById('print').addEventListener('click', () => window.print());
+        row.className = 'medicine-row group relative grid gap-2 rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 transition-all hover:border-slate-300 hover:bg-white md:grid-cols-[1.5fr_1fr_1.2fr_1fr_1.2fr_auto]';
+        row.innerHTML = `
+          <div>
+            <label class="block text-[9px] font-bold uppercase text-slate-400">Medicine Name</label>
+            <input type="text" class="med-name mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:border-teal focus:outline-none" placeholder="e.g. Aspirin 75mg" value="${name}" required>
+          </div>
+          <div>
+            <label class="block text-[9px] font-bold uppercase text-slate-400">Dose / Strength</label>
+            <input type="text" class="med-dose mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:border-teal focus:outline-none" placeholder="e.g. 75 mg" value="${dose}" required>
+          </div>
+          <div>
+            <label class="block text-[9px] font-bold uppercase text-slate-400">Frequency</label>
+            <select class="med-freq mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:border-teal focus:outline-none">
+              <option ${freq.includes('Morning') ? 'selected' : ''}>Once daily (Morning)</option>
+              <option ${freq.includes('Bedtime') || freq.includes('Night') ? 'selected' : ''}>Once daily (Bedtime)</option>
+              <option ${freq.includes('Noon') ? 'selected' : ''}>Once daily (Noon)</option>
+              <option ${freq.includes('Twice') ? 'selected' : ''}>Twice daily (M - N)</option>
+              <option ${freq.includes('Thrice') ? 'selected' : ''}>Thrice daily (M - A - N)</option>
+              <option ${freq.includes('SOS') || freq.includes('needed') ? 'selected' : ''}>As needed (SOS)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[9px] font-bold uppercase text-slate-400">Duration</label>
+            <input type="text" class="med-dur mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:border-teal focus:outline-none" placeholder="e.g. 30 days" value="${duration}" required>
+          </div>
+          <div>
+            <label class="block text-[9px] font-bold uppercase text-slate-400">Instruction</label>
+            <input type="text" class="med-inst mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:border-teal focus:outline-none" placeholder="e.g. After meals" value="${instructions}">
+          </div>
+          <div class="flex items-end justify-center no-print">
+            <button type="button" class="btn-remove-row rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 transition-colors" title="Remove Medicine">
+              <span class="material-symbols-outlined text-base">delete</span>
+            </button>
+          </div>
+        `;
+        medicineList.appendChild(row);
+      }
+
+      // Initial Default Cardiac Prescription
+      createMedicineRow('Aspirin (Ecosprin)', '75 mg', 'Once daily (Morning)', '30 days', 'After meals');
+      createMedicineRow('Atorvastatin (Atorva)', '40 mg', 'Once daily (Bedtime)', '30 days', 'At night');
+      createMedicineRow('Clopidogrel (Deplatt)', '75 mg', 'Once daily (Noon)', '30 days', 'After lunch');
+      createMedicineRow('Pantoprazole (Pan)', '40 mg', 'Once daily (Morning)', '30 days', '30 min before breakfast');
+
+      // Add Row Button
+      document.getElementById('btn-add-row')?.addEventListener('click', () => {
+        createMedicineRow();
+        notify('Added new medicine row.');
+      });
+
+      // Remove Row Event Delegation
+      medicineList.addEventListener('click', e => {
+        const removeBtn = e.target.closest('.btn-remove-row');
+        if (removeBtn) {
+          const row = removeBtn.closest('.medicine-row');
+          if (row) {
+            row.remove();
+            notify('Medicine removed.');
+          }
+        }
+      });
+
+      // Quick Formulary Chips
+      document.querySelectorAll('.btn-formulary-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const name = chip.dataset.name;
+          const dose = chip.dataset.dose;
+          const freq = chip.dataset.freq;
+          const dur = chip.dataset.dur;
+          const inst = chip.dataset.inst;
+          createMedicineRow(name, dose, freq, dur, inst);
+          notify(`Added ${name} to prescription.`);
+        });
+      });
+
+      // Past Prescription Copy
+      document.querySelectorAll('.use-past-rx').forEach(btn => {
+        btn.addEventListener('click', () => {
+          medicineList.innerHTML = '';
+          const rxData = btn.dataset.rx.split(';');
+          rxData.forEach(item => {
+            const [name, dose, freq, dur, inst] = item.split('|');
+            createMedicineRow(name, dose, freq, dur, inst);
+          });
+          notify('Past prescription imported successfully.');
+        });
+      });
+
+      // Dismiss Alert
+      document.getElementById('btn-dismiss-alert')?.addEventListener('click', () => {
+        document.getElementById('drug-interaction-alert')?.classList.add('hidden');
+      });
+
+      // Print Rx
+      document.getElementById('btn-print-rx')?.addEventListener('click', () => {
+        window.print();
+      });
+
+      // Clear Form
+      document.getElementById('btn-clear-rx')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all medicines?')) {
+          medicineList.innerHTML = '';
+          createMedicineRow();
+          notify('Prescription form reset.');
+        }
+      });
+
+      // Submit and Save
+      document.getElementById('prescription-form')?.addEventListener('submit', e => {
+        e.preventDefault();
+        notify('Prescription digitally signed & archived in Aster EMR.', 'sign');
+        const stamp = document.getElementById('signature-stamp');
+        if (stamp) {
+          stamp.className = 'inline-block rounded-2xl border-2 border-emerald-500 bg-emerald-50 p-4 text-center ring-4 ring-emerald-200 transition-all scale-105';
+        }
+      });
+
     })();
   </script>
 </body>

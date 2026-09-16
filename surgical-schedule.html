@@ -1,104 +1,1204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Surgical & OPD Schedule | Aster Aadhar Clinician Suite</title>
+  <title>Surgical OT & OPD Clinical Suite | Aster Aadhar Hospital</title>
+  <meta name="description" content="Centralized Operating Theatre (OT) management, surgical case tracking, laminar flow suite readiness, and daily OPD consultation roster for Aster Aadhar Hospital.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          colors: { primary: '#00234d', secondary: '#006876', teal: '#009A84', danger: '#E11D48' },
-          fontFamily: { display: ['Plus Jakarta Sans', 'sans-serif'], body: ['Inter', 'sans-serif'] }
+          colors: {
+            primary: '#00234d',
+            'primary-dark': '#001835',
+            'primary-light': '#003677',
+            secondary: '#006876',
+            teal: '#009A84',
+            'teal-light': '#e0f5f2',
+            danger: '#E11D48',
+            warning: '#D97706',
+            success: '#059669',
+            slate: {
+              850: '#152033',
+              900: '#0b1322',
+            }
+          },
+          fontFamily: {
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+            body: ['Inter', 'sans-serif']
+          }
         }
       }
     };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
   <style>
     body { font-family: Inter, sans-serif; }
-    h1, h2, h3, button { font-family: "Plus Jakarta Sans", sans-serif; }
-    .reveal { animation: reveal .5s cubic-bezier(.16,1,.3,1) both; }
-    @keyframes reveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .toast { animation: toast .3s ease-out both; }
-    @keyframes toast { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
-    @media (prefers-reduced-motion: reduce) { .reveal, .toast { animation: none; } }
+    h1, h2, h3, h4, .font-display { font-family: "Plus Jakarta Sans", sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Custom Animations */
+    @keyframes pulseRadar {
+      0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(0, 154, 132, 0.7); }
+      70% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 0 10px rgba(0, 154, 132, 0); }
+      100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(0, 154, 132, 0); }
+    }
+    .radar-pulse { animation: pulseRadar 2s infinite cubic-bezier(0.4, 0, 0.6, 1); }
+
+    @keyframes radarSweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .radar-sweep-arm {
+      transform-origin: center center;
+      animation: radarSweep 4s linear infinite;
+    }
+
+    @keyframes liveGlow {
+      0%, 100% { border-color: rgba(0, 154, 132, 0.4); box-shadow: 0 0 15px rgba(0, 154, 132, 0.15); }
+      50% { border-color: rgba(0, 154, 132, 0.9); box-shadow: 0 0 25px rgba(0, 154, 132, 0.35); }
+    }
+    .ot-active-card { animation: liveGlow 3s infinite ease-in-out; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+    .toast-anim {
+      animation: toastIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translate(-50%, 20px) scale(0.95); }
+      to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .radar-pulse, .radar-sweep-arm, .ot-active-card, .reveal, .toast-anim {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-  <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:px-8">
-    <div class="mx-auto flex max-w-[1500px] items-center justify-between gap-4">
-      <a href="docdash.html" class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary font-bold text-white">BP</div>
-        <div><p class="font-display text-sm font-bold text-primary">Aster Aadhar</p><p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Surgical & OPD Schedule</p></div>
-      </a>
-      <div class="hidden items-center gap-3 md:flex"><span class="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">Live • Room 204</span><span class="text-right text-xs text-slate-500">Dr. Bhupendra Patil, MCh<br><strong class="text-primary">Cardiac Sciences</strong></span></div>
-      <a href="docdash.html" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-primary hover:bg-slate-50">Back to Dashboard</a>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-teal selection:text-white">
+
+  <!-- Top Real-time OT & OPD Navigation Bar -->
+  <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/90 backdrop-blur-xl px-4 py-3 md:px-8 transition-all">
+    <div class="mx-auto flex max-w-[1600px] items-center justify-between gap-4">
+      
+      <!-- Brand & Hospital Info -->
+      <div class="flex items-center gap-3">
+        <a href="docdash.html" class="group flex items-center gap-3">
+          <div class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary via-teal to-primary shadow-lg shadow-teal/20 transition-transform duration-300 group-hover:scale-105">
+            <span class="material-symbols-outlined text-2xl text-white">vital_signs</span>
+            <span class="absolute -top-1 -right-1 flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-teal"></span>
+            </span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-display text-base font-extrabold tracking-tight text-white">Aster Aadhar</span>
+              <span class="rounded bg-teal/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal">OT Command</span>
+            </div>
+            <p class="text-[11px] font-medium text-slate-400">Surgical Suites & OPD Consultation Hub</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Live OT Suite Master Clock & Sync Status -->
+      <div class="hidden items-center gap-6 lg:flex">
+        <div class="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-850/80 px-4 py-2 shadow-inner">
+          <div class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">OT Time Synchronized</span>
+              <span class="rounded bg-emerald-500/20 px-1.5 py-0.2 text-[9px] font-mono font-bold text-emerald-400">NTP 0.4ms</span>
+            </div>
+            <p id="live-ot-clock" class="font-mono text-sm font-bold text-white tracking-widest">10:48:32 AM IST</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="text-right">
+            <p class="text-xs font-bold text-white">Dr. Bhupendra Patil, MCh</p>
+            <p class="text-[10px] font-medium text-teal">Chief Cardiac Surgeon • OT Lead</p>
+          </div>
+          <div class="h-9 w-9 rounded-full bg-gradient-to-tr from-teal to-secondary p-0.5 ring-2 ring-teal/30">
+            <div class="h-full w-full rounded-full bg-slate-850 flex items-center justify-center font-bold text-xs text-white">BP</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex items-center gap-2.5">
+        <a href="appointments.html" class="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-3.5 py-2 text-xs font-bold text-slate-200 transition-all hover:border-slate-500 hover:bg-slate-700">
+          <span class="material-symbols-outlined text-base text-cyan-400">event_available</span>
+          <span>Appointments</span>
+        </a>
+        <a href="prescription.html" class="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-teal/40 bg-teal/10 px-3.5 py-2 text-xs font-bold text-teal transition-all hover:bg-teal hover:text-white">
+          <span class="material-symbols-outlined text-base">prescriptions</span>
+          <span>E-Prescription</span>
+        </a>
+        <a href="docdash.html" class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-secondary to-teal px-4 py-2 text-xs font-bold text-white shadow-lg shadow-teal/20 transition-all hover:opacity-95 hover:scale-[1.02]">
+          <span class="material-symbols-outlined text-base">dashboard</span>
+          <span>Clinician Dashboard</span>
+        </a>
+      </div>
+
     </div>
   </header>
 
-  <main class="mx-auto max-w-[1500px] space-y-5 px-4 py-6 md:px-8">
-    <section class="reveal flex flex-col justify-between gap-5 rounded-2xl bg-primary p-5 text-white shadow-lg md:flex-row md:items-center md:p-7">
-      <div><p class="text-xs font-bold uppercase tracking-[.18em] text-cyan-200">Doctor workspace</p><h1 class="mt-2 text-2xl font-extrabold md:text-3xl">Surgical & OPD Schedule</h1><p class="mt-2 max-w-2xl text-sm text-blue-100">Coordinate consultation slots, OT readiness, surgical teams, and patient preparation from one daily schedule.</p></div>
-      <div class="flex flex-wrap gap-2"><button class="action rounded-lg bg-white/10 px-3 py-2 text-xs font-bold hover:bg-white/20" data-message="Schedule synced with OT and OPD teams.">↻ Sync Schedule</button><button class="action rounded-lg bg-teal px-3 py-2 text-xs font-bold hover:bg-secondary" data-message="New surgical case form is ready.">＋ Add Case</button></div>
+  <!-- Main Operating Console -->
+  <main class="mx-auto w-full max-w-[1600px] flex-1 space-y-6 px-4 py-6 md:px-8">
+    
+    <!-- Hero Banner with Live Day Switcher & Quick OT Stats -->
+    <section class="reveal relative overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-primary via-slate-850 to-slate-900 p-6 shadow-2xl md:p-8">
+      <div class="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-teal/10 blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 h-80 w-80 rounded-full bg-secondary/20 blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-teal/30 bg-teal/10 px-3 py-1 text-xs font-bold text-teal">
+            <span class="h-2 w-2 rounded-full bg-teal radar-pulse"></span>
+            <span>Live Surgical & Clinical Operations Console</span>
+          </div>
+          <h1 class="mt-3 text-2xl font-extrabold tracking-tight text-white md:text-4xl">
+            Surgical Theatres & OPD Schedule
+          </h1>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">
+            Real-time laminar flow operating room telemetry, PAC clearance tracking, live stage scrubber, and prioritized OPD patient flow for Thursday, 10 September 2026.
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="btn-sync-all" class="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/90 px-4 py-2.5 text-xs font-bold text-slate-200 shadow-md transition-all hover:border-slate-500 hover:bg-slate-700 active:scale-95">
+            <span class="material-symbols-outlined text-base text-cyan-400">sync</span>
+            <span>Sync OT & OPD</span>
+          </button>
+          
+          <button id="btn-emergency-stat" class="flex items-center gap-2 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-2.5 text-xs font-bold text-rose-400 transition-all hover:bg-rose-600 hover:text-white active:scale-95">
+            <span class="material-symbols-outlined text-base">emergency</span>
+            <span>Emergency OT Alert</span>
+          </button>
+
+          <button id="btn-add-case" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal to-secondary px-5 py-2.5 text-xs font-bold text-white shadow-lg shadow-teal/25 transition-all hover:brightness-110 active:scale-95">
+            <span class="material-symbols-outlined text-base">add_circle</span>
+            <span>Schedule Surgical Case</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Schedule Day Selector Bar -->
+      <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-slate-800/80 pt-6">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-slate-400 text-lg">calendar_month</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Operating Block:</span>
+          <span class="rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-bold text-cyan-300">OPD 09:00 - 14:00</span>
+          <span class="rounded-lg bg-teal/20 px-2.5 py-1 text-xs font-bold text-teal">OT Block 13:30 - 18:00</span>
+        </div>
+
+        <div class="flex items-center rounded-xl border border-slate-800 bg-slate-850 p-1">
+          <button class="day-tab active rounded-lg bg-gradient-to-r from-secondary to-teal px-4 py-1.5 text-xs font-bold text-white shadow" data-day="Today">Today (10 Sep)</button>
+          <button class="day-tab rounded-lg px-4 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition-colors" data-day="Tomorrow">Tomorrow (11 Sep)</button>
+          <button class="day-tab rounded-lg px-4 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition-colors" data-day="Saturday">Saturday (12 Sep)</button>
+        </div>
+      </div>
     </section>
 
-    <section class="reveal flex flex-col justify-between gap-4 rounded-2xl bg-white p-5 shadow-sm md:flex-row md:items-center">
-      <div><p class="text-xs font-bold uppercase tracking-wider text-secondary">Thursday • 10 September 2026</p><h2 class="mt-1 text-xl font-bold text-primary">Today’s clinical schedule</h2><p class="mt-1 text-xs text-slate-500">OPD session 09:00 AM–02:00 PM • OT block 01:30 PM–05:00 PM</p></div>
-      <div class="flex flex-wrap gap-2"><button class="day-btn rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white" data-day="Today">Today</button><button class="day-btn rounded-lg bg-slate-100 px-4 py-2 text-xs font-bold text-primary" data-day="Tomorrow">Tomorrow</button><button class="day-btn rounded-lg bg-slate-100 px-4 py-2 text-xs font-bold text-primary" data-day="Friday">Friday</button></div>
+    <!-- Key Metrics Telemetry Grid -->
+    <section class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
+      
+      <div class="reveal rounded-2xl border border-slate-800 bg-slate-850/80 p-4 shadow-sm backdrop-blur transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400">
+          <span class="text-[11px] font-bold uppercase tracking-wider">OPD Registered</span>
+          <span class="material-symbols-outlined text-slate-500 text-base">groups</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-2xl font-black text-white">24</span>
+          <span class="text-[11px] font-bold text-emerald-400">12 Done</span>
+        </div>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div class="h-full bg-emerald-500 rounded-full" style="width: 50%"></div>
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl border border-slate-800 bg-slate-850/80 p-4 shadow-sm backdrop-blur transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Waiting Cabin</span>
+          <span class="material-symbols-outlined text-amber-500 text-base">hourglass_top</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-2xl font-black text-amber-400">5</span>
+          <span class="text-[11px] text-slate-400">Avg 18m</span>
+        </div>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div class="h-full bg-amber-500 rounded-full" style="width: 42%"></div>
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl border border-teal/40 bg-teal/5 p-4 shadow-sm backdrop-blur transition-all hover:border-teal/60">
+        <div class="flex items-center justify-between text-teal">
+          <span class="text-[11px] font-bold uppercase tracking-wider">OT Scheduled</span>
+          <span class="material-symbols-outlined text-teal text-base">medical_services</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-2xl font-black text-teal">3 Cases</span>
+          <span class="text-[11px] font-bold text-teal">1 Active</span>
+        </div>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div class="h-full bg-teal rounded-full" style="width: 33%"></div>
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl border border-slate-800 bg-slate-850/80 p-4 shadow-sm backdrop-blur transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400">
+          <span class="text-[11px] font-bold uppercase tracking-wider">PAC Clearance</span>
+          <span class="material-symbols-outlined text-emerald-400 text-base">task_alt</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-2xl font-black text-emerald-400">100%</span>
+          <span class="text-[11px] text-slate-400">3/3 Cleared</span>
+        </div>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div class="h-full bg-emerald-400 rounded-full" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl border border-slate-800 bg-slate-850/80 p-4 shadow-sm backdrop-blur transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Blood Cross-match</span>
+          <span class="material-symbols-outlined text-rose-400 text-base">bloodtype</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-2xl font-black text-rose-400">6 Units</span>
+          <span class="text-[11px] text-slate-400">PRBC Ready</span>
+        </div>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div class="h-full bg-rose-500 rounded-full" style="width: 85%"></div>
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl border border-slate-800 bg-slate-850/80 p-4 shadow-sm backdrop-blur transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Surgical Staff</span>
+          <span class="material-symbols-outlined text-cyan-400 text-base">badge</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-2xl font-black text-cyan-400">9</span>
+          <span class="text-[11px] text-slate-400">In Theatre</span>
+        </div>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div class="h-full bg-cyan-400 rounded-full" style="width: 90%"></div>
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 shadow-sm backdrop-blur transition-all hover:border-rose-500/50">
+        <div class="flex items-center justify-between text-rose-400">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Stat Action</span>
+          <span class="material-symbols-outlined text-rose-500 text-base animate-pulse">crisis_alert</span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-2xl font-black text-rose-400">1</span>
+          <span class="text-[11px] font-bold text-rose-300">TEE Signed</span>
+        </div>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div class="h-full bg-rose-500 rounded-full" style="width: 100%"></div>
+        </div>
+      </div>
+
     </section>
 
-    <section class="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
-      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">OPD slots</p><strong class="mt-1 block text-2xl text-primary">24</strong><span class="text-[11px] text-emerald-600">12 completed</span></div>
-      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Waiting</p><strong class="mt-1 block text-2xl text-amber-500">5</strong><span class="text-[11px] text-slate-500">Avg wait 22m</span></div>
-      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">OT cases</p><strong class="mt-1 block text-2xl text-secondary">2</strong><span class="text-[11px] text-slate-500">1 in preparation</span></div>
-      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Pre-op clear</p><strong class="mt-1 block text-2xl text-emerald-600">1</strong><span class="text-[11px] text-slate-500">1 pending review</span></div>
-      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Team ready</p><strong class="mt-1 block text-2xl text-teal">8</strong><span class="text-[11px] text-slate-500">On duty now</span></div>
-      <div class="reveal rounded-xl bg-white p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-slate-400">Tele-OPD</p><strong class="mt-1 block text-2xl text-secondary">3</strong><span class="text-[11px] text-slate-500">Video rooms ready</span></div>
-      <div class="reveal rounded-xl bg-rose-50 p-4 shadow-sm"><p class="text-[10px] font-bold uppercase text-rose-500">Alerts</p><strong class="mt-1 block text-2xl text-danger">2</strong><span class="text-[11px] text-danger">Action required</span></div>
+    <!-- Operating Room Live Suites Visual Grid (Laminar Flow OT Hub) -->
+    <section class="reveal space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-teal text-2xl">theater_comedy</span>
+          <div>
+            <h2 class="text-xl font-extrabold text-white">Live Operating Theatres & Laminar Flow Suites</h2>
+            <p class="text-xs text-slate-400">Hospital Level 3 • Cleanroom Class 100 HEPA Filtration & Temperature Telemetry</p>
+          </div>
+        </div>
+        <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 radar-pulse"></span>
+          <span>Suites Active: 2 / 3</span>
+        </span>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-3">
+        
+        <!-- OT 1: Cardiac Surgery (Active In Progress) -->
+        <div class="ot-active-card relative overflow-hidden rounded-2xl border-2 border-teal bg-gradient-to-b from-slate-850 to-slate-900 p-5 shadow-xl transition-all">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="rounded-lg bg-teal px-2.5 py-1 text-xs font-black text-slate-900">OT-1</span>
+                <span class="text-xs font-bold text-teal uppercase tracking-wider">Cardiac Suite (Laminar 100)</span>
+              </div>
+              <h3 class="mt-2 text-base font-bold text-white">Minimally Invasive CABG (LIMA to LAD)</h3>
+              <p class="text-xs text-slate-400">Patient: <strong class="text-slate-200">Mr. Shrikant Mane (54y / M)</strong> • MRN-2023-8941</p>
+            </div>
+            <span class="rounded-full bg-teal/20 px-2.5 py-1 text-[11px] font-bold text-teal flex items-center gap-1">
+              <span class="h-1.5 w-1.5 rounded-full bg-teal animate-ping"></span>
+              IN SURGERY
+            </span>
+          </div>
+
+          <!-- Live Surgery Metrics & Vitals -->
+          <div class="mt-4 grid grid-cols-4 gap-2 rounded-xl border border-slate-800 bg-slate-900/90 p-3 text-center">
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">Elapsed</span>
+              <span class="block font-mono text-xs font-bold text-cyan-300">01h 42m</span>
+            </div>
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">Heart Rate</span>
+              <span class="block font-mono text-xs font-bold text-emerald-400">68 bpm</span>
+            </div>
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">ACT Heparin</span>
+              <span class="block font-mono text-xs font-bold text-amber-400">460 sec</span>
+            </div>
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">Temp</span>
+              <span class="block font-mono text-xs font-bold text-teal">35.8°C</span>
+            </div>
+          </div>
+
+          <!-- Stage Indicator -->
+          <div class="mt-4">
+            <div class="flex items-center justify-between text-[11px] font-bold">
+              <span class="text-slate-400">Current Phase:</span>
+              <span class="text-teal">Graft Anastomosis (Step 3/5)</span>
+            </div>
+            <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-800">
+              <div class="h-full bg-gradient-to-r from-secondary to-teal rounded-full transition-all duration-500" style="width: 65%"></div>
+            </div>
+          </div>
+
+          <!-- Surgical Team -->
+          <div class="mt-4 flex items-center justify-between text-xs text-slate-300 border-t border-slate-800 pt-3">
+            <span>Lead: <strong>Dr. B. Patil</strong> • Anesth: <strong>Dr. L. Chaudhari</strong></span>
+            <button class="btn-ot-detail text-teal hover:underline font-bold text-[11px]" data-case="CABG-Mane">Live Video Feed ›</button>
+          </div>
+        </div>
+
+        <!-- OT 2: Valve Replacement / Structural (Pre-Op Scrub) -->
+        <div class="relative overflow-hidden rounded-2xl border border-amber-500/40 bg-slate-850/90 p-5 shadow-lg transition-all hover:border-amber-400">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="rounded-lg bg-amber-500 px-2.5 py-1 text-xs font-black text-slate-900">OT-2</span>
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Hybrid Cardio Suite</span>
+              </div>
+              <h3 class="mt-2 text-base font-bold text-white">Surgical Aortic Valve Replacement (AVR)</h3>
+              <p class="text-xs text-slate-400">Patient: <strong class="text-slate-200">Mr. Vikram Deshmukh (45y / M)</strong> • MRN-2023-7721</p>
+            </div>
+            <span class="rounded-full bg-amber-500/20 px-2.5 py-1 text-[11px] font-bold text-amber-400">
+              PRE-OP INDUCTION
+            </span>
+          </div>
+
+          <!-- Details & Readiness -->
+          <div class="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-slate-800 bg-slate-900/90 p-3 text-center">
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">Scheduled</span>
+              <span class="block font-mono text-xs font-bold text-white">03:45 PM</span>
+            </div>
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">PAC Status</span>
+              <span class="block text-xs font-bold text-emerald-400">Cleared ✓</span>
+            </div>
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">Valve Prosthesis</span>
+              <span class="block text-xs font-bold text-cyan-300">23mm Bio</span>
+            </div>
+          </div>
+
+          <!-- Stage Indicator -->
+          <div class="mt-4">
+            <div class="flex items-center justify-between text-[11px] font-bold">
+              <span class="text-slate-400">Readiness:</span>
+              <span class="text-amber-400">Anesthesia Induction (Step 1/5)</span>
+            </div>
+            <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-800">
+              <div class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: 25%"></div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-4 flex items-center justify-between text-xs text-slate-300 border-t border-slate-800 pt-3">
+            <span>Anesth: <strong>Dr. N. Shah</strong> • Resident: <strong>Dr. A. Shinde</strong></span>
+            <button class="btn-ot-detail text-amber-400 hover:underline font-bold text-[11px]" data-case="AVR-Deshmukh">Check Readiness ›</button>
+          </div>
+        </div>
+
+        <!-- OT 3: Thoracic / Vascular (Sterilization & Turnaround) -->
+        <div class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-850/70 p-5 shadow-lg transition-all hover:border-slate-700">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="rounded-lg bg-slate-700 px-2.5 py-1 text-xs font-black text-slate-200">OT-3</span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">General Thoracic</span>
+              </div>
+              <h3 class="mt-2 text-base font-bold text-white">Sterilization & HEPA Purge</h3>
+              <p class="text-xs text-slate-400">Next Case: <strong class="text-slate-200">Thoracoscopic Thymectomy</strong> • 05:15 PM</p>
+            </div>
+            <span class="rounded-full bg-slate-700 px-2.5 py-1 text-[11px] font-bold text-slate-300">
+              TURNAROUND
+            </span>
+          </div>
+
+          <!-- Details & Readiness -->
+          <div class="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-slate-800 bg-slate-900/90 p-3 text-center">
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">HEPA Purge</span>
+              <span class="block font-mono text-xs font-bold text-teal">00h 14m Left</span>
+            </div>
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">Sterility</span>
+              <span class="block text-xs font-bold text-emerald-400">Class 100</span>
+            </div>
+            <div>
+              <span class="text-[9px] font-bold uppercase text-slate-400">Tray Check</span>
+              <span class="block text-xs font-bold text-cyan-300">Complete</span>
+            </div>
+          </div>
+
+          <!-- Stage Indicator -->
+          <div class="mt-4">
+            <div class="flex items-center justify-between text-[11px] font-bold">
+              <span class="text-slate-400">Turnaround Progress:</span>
+              <span class="text-slate-300">Ready in 15 mins</span>
+            </div>
+            <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-800">
+              <div class="h-full bg-slate-600 rounded-full transition-all duration-500" style="width: 80%"></div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-4 flex items-center justify-between text-xs text-slate-300 border-t border-slate-800 pt-3">
+            <span>Nursing In-charge: <strong>Sister Rekha</strong></span>
+            <button class="btn-ot-detail text-cyan-400 hover:underline font-bold text-[11px]" data-case="OT3-Sterile">Tray Dossier ›</button>
+          </div>
+        </div>
+
+      </div>
     </section>
 
-    <section class="grid gap-5 xl:grid-cols-[1.1fr_.9fr]">
-      <article class="reveal rounded-2xl bg-white p-5 shadow-sm">
-        <div class="flex flex-col justify-between gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center"><div><h2 class="text-xl font-bold text-primary">OPD consultation slots</h2><p class="mt-1 text-xs text-slate-500">Manage appointment order and patient readiness.</p></div><select id="opd-filter" class="rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:border-secondary focus:ring-secondary"><option value="all">All OPD slots</option><option value="waiting">Waiting</option><option value="completed">Completed</option><option value="tele">Tele-OPD</option></select></div>
-        <div class="mt-4 space-y-3" id="opd-list">
-          <div class="opd-item rounded-xl border border-cyan-100 bg-cyan-50/50 p-4" data-status="waiting"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-secondary px-2 py-1 text-xs font-bold text-white">#15</span><div><h3 class="font-bold text-primary">Mrs. Meera Mandhare • 58y / F</h3><p class="text-xs text-slate-500">10:00 AM • Post-PTCA Day 45 review</p></div></div><span class="rounded-full bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-700">In cabin</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>BP 102/68 • HR 88 • SpO2 96%</span><button class="action rounded-lg bg-teal px-3 py-1.5 font-bold text-white" data-message="Consultation opened for Mrs. Meera Mandhare.">Open consult</button></div></div>
-          <div class="opd-item rounded-xl border border-rose-100 bg-rose-50/40 p-4" data-status="waiting"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-danger px-2 py-1 text-xs font-bold text-white">#16</span><div><h3 class="font-bold text-primary">Mr. Anant Gaikwad • 71y / M</h3><p class="text-xs text-slate-500">10:15 AM • Triple vessel disease follow-up</p></div></div><span class="rounded-full bg-rose-100 px-2 py-1 text-[10px] font-bold text-danger">Priority triage</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>BP 148/92 • HR 76 • SpO2 97%</span><button class="action rounded-lg bg-primary px-3 py-1.5 font-bold text-white" data-message="Patient #16 called to Cabin 204.">Call patient</button></div></div>
-          <div class="opd-item rounded-xl border border-slate-200 p-4" data-status="tele"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-secondary px-2 py-1 text-xs font-bold text-white">#18</span><div><h3 class="font-bold text-primary">Mrs. Nilima Chougule • 46y / F</h3><p class="text-xs text-slate-500">10:45 AM • Mechanical mitral valve review</p></div></div><span class="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-bold text-secondary">Tele-OPD</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>Video room ready • INR 2.4</span><button class="action rounded-lg bg-secondary px-3 py-1.5 font-bold text-white" data-message="Tele-consult room opened.">Join call</button></div></div>
-          <div class="opd-item rounded-xl border border-emerald-100 bg-emerald-50/40 p-4" data-status="completed"><div class="flex flex-wrap items-start justify-between gap-3"><div class="flex items-center gap-3"><span class="rounded-lg bg-emerald-600 px-2 py-1 text-xs font-bold text-white">#14</span><div><h3 class="font-bold text-primary">Mr. Arjun Mane • 52y / M</h3><p class="text-xs text-slate-500">09:40 AM • Pre-operative thoracic review</p></div></div><span class="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-bold text-emerald-700">Completed</span></div><div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500"><span>Summary signed • CABG clearance advised</span><button class="action rounded-lg bg-slate-100 px-3 py-1.5 font-bold text-primary" data-message="Consultation summary opened.">View summary</button></div></div>
+    <!-- Interactive Surgical Case Stage Scrubber / Timeline -->
+    <section class="reveal rounded-3xl border border-slate-800 bg-slate-850 p-6 shadow-xl">
+      <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center border-b border-slate-800 pb-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-teal text-xl">linear_scale</span>
+            <h2 class="text-lg font-bold text-white">Active Case Surgical Stage Timeline</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">Live progression tracker for Case #CABG-0814 (Patient: Shrikant Mane • OT-1)</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-400">Step Progression:</span>
+          <span id="timeline-step-badge" class="rounded-lg bg-teal/20 px-3 py-1 text-xs font-mono font-bold text-teal">Stage 3 of 5: Incision & Anastomosis</span>
+        </div>
+      </div>
+
+      <!-- Scrubber Stepper Steps -->
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        
+        <!-- Step 1 -->
+        <button class="stage-step-btn group text-left rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 p-4 transition-all hover:bg-emerald-500/20" data-stage="1" data-title="Stage 1: Pre-Op Holding & Safety Check" data-desc="Patient identified with dual biometric RFID wristband, surgical site marked, NPO status verified for >8 hours, blood reserved.">
+          <div class="flex items-center justify-between">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 font-mono text-xs font-bold text-slate-900">✓</span>
+            <span class="text-[10px] font-bold uppercase text-emerald-400">08:30 AM</span>
+          </div>
+          <h4 class="mt-3 text-xs font-bold text-white">1. Pre-Op Check</h4>
+          <p class="text-[11px] text-slate-400 mt-1">ID, PAC & Site Verification</p>
+        </button>
+
+        <!-- Step 2 -->
+        <button class="stage-step-btn group text-left rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 p-4 transition-all hover:bg-emerald-500/20" data-stage="2" data-title="Stage 2: Anesthesia Induction & Intubation" data-desc="Endotracheal intubation smooth, central venous catheter & arterial line placed for continuous hemodynamic arterial monitoring.">
+          <div class="flex items-center justify-between">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 font-mono text-xs font-bold text-slate-900">✓</span>
+            <span class="text-[10px] font-bold uppercase text-emerald-400">09:15 AM</span>
+          </div>
+          <h4 class="mt-3 text-xs font-bold text-white">2. Induction</h4>
+          <p class="text-[11px] text-slate-400 mt-1">Arterial Line & TEE Setup</p>
+        </button>
+
+        <!-- Step 3 (Active) -->
+        <button class="stage-step-btn active group text-left rounded-2xl border-2 border-teal bg-teal/20 p-4 ring-4 ring-teal/20 transition-all" data-stage="3" data-title="Stage 3: Incision & Vessel Anastomosis (CURRENT)" data-desc="Left Internal Mammary Artery (LIMA) harvested and grafted to Left Anterior Descending (LAD) coronary artery under steady hemodynamics.">
+          <div class="flex items-center justify-between">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal font-mono text-xs font-bold text-slate-900 animate-pulse">3</span>
+            <span class="text-[10px] font-bold uppercase text-teal">In Progress</span>
+          </div>
+          <h4 class="mt-3 text-xs font-bold text-white">3. Incision / Bypass</h4>
+          <p class="text-[11px] text-teal-200 mt-1">LIMA-LAD Grafting</p>
+        </button>
+
+        <!-- Step 4 -->
+        <button class="stage-step-btn group text-left rounded-2xl border border-slate-800 bg-slate-900/60 p-4 opacity-70 transition-all hover:opacity-100 hover:border-slate-700" data-stage="4" data-title="Stage 4: Protamine Reversal & Sternal Closure" data-desc="Heparin neutralization with Protamine, epicardial pacing wires anchored, thoracic drains positioned, multi-layer wound closure.">
+          <div class="flex items-center justify-between">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 font-mono text-xs font-bold text-slate-400">4</span>
+            <span class="text-[10px] font-bold uppercase text-slate-500">Est. 11:30 AM</span>
+          </div>
+          <h4 class="mt-3 text-xs font-bold text-slate-300">4. Closure</h4>
+          <p class="text-[11px] text-slate-500 mt-1">Hemostasis & Layer Closure</p>
+        </button>
+
+        <!-- Step 5 -->
+        <button class="stage-step-btn group text-left rounded-2xl border border-slate-800 bg-slate-900/60 p-4 opacity-70 transition-all hover:opacity-100 hover:border-slate-700" data-stage="5" data-title="Stage 5: Extubation & Transfer to CT-ICU" data-desc="Direct transfer to Level 3 Cardiothoracic Intensive Care Unit with dedicated 1:1 cardiac nursing and mechanical vent support.">
+          <div class="flex items-center justify-between">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 font-mono text-xs font-bold text-slate-400">5</span>
+            <span class="text-[10px] font-bold uppercase text-slate-500">Est. 12:15 PM</span>
+          </div>
+          <h4 class="mt-3 text-xs font-bold text-slate-300">5. CT-ICU Handover</h4>
+          <p class="text-[11px] text-slate-500 mt-1">Post-op Intensive Care Bay</p>
+        </button>
+
+      </div>
+
+      <!-- Stage Information Panel -->
+      <div id="stage-detail-panel" class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/80 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h4 id="stage-detail-title" class="text-sm font-bold text-white">Stage 3: Incision & Vessel Anastomosis (CURRENT)</h4>
+          <p id="stage-detail-desc" class="text-xs text-slate-300 mt-1">Left Internal Mammary Artery (LIMA) harvested and grafted to Left Anterior Descending (LAD) coronary artery under steady hemodynamics.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-scrubber-advance" class="rounded-xl bg-teal px-4 py-2 text-xs font-bold text-slate-900 shadow hover:bg-teal/90 transition-all active:scale-95">
+            Advance to Next Stage ›
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Two-Column Workflow Section: OPD Consultation Slots & Surgical WHO Checklist -->
+    <div class="grid gap-6 xl:grid-cols-[1.2fr_.8fr]">
+      
+      <!-- Left Column: OPD Consultation Queue & Patient Call Hub -->
+      <article class="reveal rounded-3xl border border-slate-800 bg-slate-850 p-6 shadow-xl space-y-5">
+        
+        <div class="flex flex-col justify-between gap-4 border-b border-slate-800 pb-4 sm:flex-row sm:items-center">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-cyan-400 text-xl">assignment_ind</span>
+              <h2 class="text-lg font-bold text-white">OPD Consultation Queue</h2>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">Cabin 204 • Morning Consultation Roster</p>
+          </div>
+
+          <!-- Filter Pills & Search -->
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative">
+              <input type="text" id="opd-search" placeholder="Search patient or MRN..." class="w-44 rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 pl-8 text-xs text-slate-200 placeholder-slate-500 focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal">
+              <span class="material-symbols-outlined absolute left-2.5 top-2 text-sm text-slate-500">search</span>
+            </div>
+            
+            <select id="opd-filter-select" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-bold text-slate-200 focus:border-teal focus:outline-none">
+              <option value="all">All Patients (4)</option>
+              <option value="waiting">Waiting in Lounge (2)</option>
+              <option value="tele">Tele-OPD Video (1)</option>
+              <option value="completed">Completed (1)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- OPD Patient List -->
+        <div class="space-y-3" id="opd-patient-container">
+          
+          <!-- Patient 1: In Cabin / Priority Triage -->
+          <div class="opd-card group rounded-2xl border border-cyan-500/30 bg-gradient-to-r from-cyan-950/40 via-slate-850 to-slate-850 p-4 transition-all hover:border-cyan-400 hover:shadow-lg" data-status="waiting" data-name="Meera Mandhare" data-mrn="1108">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-secondary to-teal text-xs font-black text-white shadow">
+                  #15
+                </span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-white group-hover:text-cyan-300 transition-colors">Mrs. Meera Mandhare</h3>
+                    <span class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-300">In Cabin 204</span>
+                  </div>
+                  <p class="text-xs text-slate-400">58y / Female • MRN-AAH-2023-1108 • 10:00 AM Slot</p>
+                </div>
+              </div>
+              <span class="rounded-full border border-teal/30 bg-teal/10 px-2.5 py-1 text-[10px] font-bold text-teal">
+                Post-PTCA Day 45 Review
+              </span>
+            </div>
+
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-[11px]">
+              <div class="flex items-center gap-4 text-slate-300 font-mono">
+                <span>BP: <strong class="text-white">102/68</strong></span>
+                <span>HR: <strong class="text-emerald-400">88 bpm</strong></span>
+                <span>SpO2: <strong class="text-cyan-300">96%</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <a href="prescription.html" class="flex items-center gap-1 rounded-lg bg-teal px-3 py-1.5 text-xs font-bold text-slate-900 shadow hover:bg-teal/90 transition-all">
+                  <span class="material-symbols-outlined text-sm">prescriptions</span>
+                  <span>E-Prescribe</span>
+                </a>
+                <button class="btn-call-patient rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-200 hover:bg-slate-700 transition-all" data-patient="Mrs. Meera Mandhare" data-token="15">
+                  Chime Patient
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patient 2: Priority Triage Alert -->
+          <div class="opd-card group rounded-2xl border border-rose-500/40 bg-gradient-to-r from-rose-950/40 via-slate-850 to-slate-850 p-4 transition-all hover:border-rose-400 hover:shadow-lg" data-status="waiting" data-name="Anant Gaikwad" data-mrn="1402">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-600 to-rose-800 text-xs font-black text-white shadow">
+                  #16
+                </span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-white group-hover:text-rose-300 transition-colors">Mr. Anant Gaikwad</h3>
+                    <span class="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-rose-300 animate-pulse">Priority Triage</span>
+                  </div>
+                  <p class="text-xs text-slate-400">71y / Male • MRN-AAH-2023-1402 • 10:15 AM Slot</p>
+                </div>
+              </div>
+              <span class="rounded-full border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 text-[10px] font-bold text-rose-300">
+                Triple Vessel Disease Follow-up
+              </span>
+            </div>
+
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-[11px]">
+              <div class="flex items-center gap-4 text-slate-300 font-mono">
+                <span>BP: <strong class="text-rose-400">148/92 ⚠️</strong></span>
+                <span>HR: <strong class="text-amber-400">76 bpm</strong></span>
+                <span>SpO2: <strong class="text-cyan-300">97%</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="btn-call-patient rounded-lg bg-primary-light px-3.5 py-1.5 text-xs font-bold text-white hover:bg-primary transition-all flex items-center gap-1" data-patient="Mr. Anant Gaikwad" data-token="16">
+                  <span class="material-symbols-outlined text-sm">volume_up</span>
+                  <span>Call to Cabin 204</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patient 3: Tele-OPD Video Consult -->
+          <div class="opd-card group rounded-2xl border border-secondary/40 bg-slate-850 p-4 transition-all hover:border-secondary hover:shadow-lg" data-status="tele" data-name="Nilima Chougule" data-mrn="1920">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-xs font-black text-cyan-300 border border-slate-700">
+                  #18
+                </span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-white group-hover:text-cyan-300 transition-colors">Mrs. Nilima Chougule</h3>
+                    <span class="rounded-full bg-secondary/30 px-2 py-0.5 text-[10px] font-bold text-cyan-300">HD Video Ready</span>
+                  </div>
+                  <p class="text-xs text-slate-400">46y / Female • MRN-AAH-2023-1920 • 10:45 AM Slot</p>
+                </div>
+              </div>
+              <span class="rounded-full border border-secondary/40 bg-secondary/10 px-2.5 py-1 text-[10px] font-bold text-cyan-300">
+                Mechanical Mitral Valve & INR 2.4
+              </span>
+            </div>
+
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-[11px]">
+              <div class="flex items-center gap-4 text-slate-300 font-mono">
+                <span>Encrypted WebRTC Room: <strong class="text-teal">Aster-Tele-204</strong></span>
+                <span>Prothrombin INR: <strong class="text-emerald-400">2.4 (Target 2.0-3.0)</strong></span>
+              </div>
+              <button class="btn-join-tele rounded-lg bg-secondary px-3.5 py-1.5 text-xs font-bold text-white hover:bg-secondary/80 transition-all flex items-center gap-1" data-patient="Mrs. Nilima Chougule">
+                <span class="material-symbols-outlined text-sm">videocam</span>
+                <span>Join Tele-Call</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Patient 4: Completed -->
+          <div class="opd-card group rounded-2xl border border-emerald-500/30 bg-slate-850/60 p-4 transition-all hover:border-emerald-500/50" data-status="completed" data-name="Arjun Mane" data-mrn="0982">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-xs font-black text-emerald-400 border border-emerald-500/30">
+                  #14
+                </span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-slate-300">Mr. Arjun Mane</h3>
+                    <span class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">Completed 09:45 AM</span>
+                  </div>
+                  <p class="text-xs text-slate-400">52y / Male • Pre-operative Thoracic Clearance</p>
+                </div>
+              </div>
+              <span class="rounded-full bg-slate-800 px-2.5 py-1 text-[10px] font-bold text-slate-400">
+                Summary Signed
+              </span>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2 text-[11px] text-slate-400">
+              <span>Diagnosis: Stable Angina • Advised CABG Planning</span>
+              <button class="btn-view-summary text-xs font-bold text-teal hover:underline" data-patient="Mr. Arjun Mane">View Clinical Summary ›</button>
+            </div>
+          </div>
+
         </div>
       </article>
 
-      <article class="reveal rounded-2xl bg-white p-5 shadow-sm">
-        <div class="flex flex-col justify-between gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center"><div><h2 class="text-xl font-bold text-primary">Surgical / OT schedule</h2><p class="mt-1 text-xs text-slate-500">OT-3 Laminar Flow • Cardiac block</p></div><span class="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-700">Team on standby</span></div>
-        <div class="mt-4 space-y-3">
-          <div class="rounded-xl border-l-4 border-secondary bg-cyan-50/60 p-4"><div class="flex items-center justify-between gap-2"><span class="rounded-full bg-primary-fixed px-2 py-1 text-[10px] font-bold text-primary">01:30 PM • OT-3</span><span class="text-[10px] font-bold text-secondary">READY</span></div><h3 class="mt-3 font-bold text-primary">Minimally Invasive CABG</h3><p class="mt-1 text-xs text-slate-500">Patient: Shrikant Mane • 54y / M</p><p class="mt-2 text-[11px] text-slate-500">Cross-match: 4 Units PRBC reserved • PAC clear</p><button class="action mt-3 rounded-lg bg-primary px-3 py-2 text-[11px] font-bold text-white" data-message="OT checklist and consent opened for Shrikant Mane.">Checklist & Consent</button></div>
-          <div class="rounded-xl border-l-4 border-amber-400 bg-amber-50/60 p-4"><div class="flex items-center justify-between gap-2"><span class="rounded-full bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-700">03:45 PM • OT-2</span><span class="text-[10px] font-bold text-amber-700">PRE-OP</span></div><h3 class="mt-3 font-bold text-primary">Surgical AVR Evaluation</h3><p class="mt-1 text-xs text-slate-500">Patient: Vikram Deshmukh • 45y / M</p><p class="mt-2 text-[11px] text-slate-500">TEE reviewed • Anesthesia clearance pending</p><button class="action mt-3 rounded-lg bg-amber-500 px-3 py-2 text-[11px] font-bold text-white" data-message="Pre-operative clearance task assigned to anesthesia.">Review readiness</button></div>
-          <div class="rounded-xl border border-slate-200 p-4"><div class="flex items-center justify-between gap-2"><h3 class="font-bold text-primary">Cardiac board review</h3><span class="text-[10px] font-semibold text-slate-500">04:30 PM</span></div><p class="mt-1 text-xs text-slate-500">3 case presentations • TAVI vs Surgical AVR</p><button class="action mt-3 rounded-lg bg-slate-100 px-3 py-2 text-[11px] font-bold text-primary" data-message="Cardiac board dossiers opened.">View dossiers</button></div>
-        </div>
-      </article>
-    </section>
+      <!-- Right Column: WHO Surgical Safety Checklist & On-Duty Surgical Team -->
+      <div class="space-y-5">
+        
+        <!-- WHO Surgical Safety Checklist Card -->
+        <article class="reveal rounded-3xl border border-slate-800 bg-slate-850 p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-teal text-xl">fact_check</span>
+              <h2 class="text-lg font-bold text-white">WHO Surgical Safety Checklist</h2>
+            </div>
+            <span id="who-status-badge" class="rounded-full bg-teal/20 px-2.5 py-1 text-[10px] font-bold text-teal">3 of 5 Complete</span>
+          </div>
 
-    <section class="reveal grid gap-5 md:grid-cols-3">
-      <div class="rounded-2xl bg-white p-5 shadow-sm"><h2 class="font-bold text-primary">Surgical team</h2><p class="mt-1 text-xs text-slate-500">On duty 08:00 AM–08:00 PM</p><div class="mt-4 space-y-3 text-xs"><div class="flex items-center justify-between"><span>Dr. Lokesh Chaudhari, MD<br><small class="text-slate-400">Lead cardiac anesthetist</small></span><button class="action rounded-lg bg-cyan-50 px-2 py-1 text-secondary" data-message="Dialing Extension 3108.">☎</button></div><div class="flex items-center justify-between"><span>Dr. Aniket Shinde, MS<br><small class="text-slate-400">Cardiac senior resident</small></span><button class="action rounded-lg bg-cyan-50 px-2 py-1 text-secondary" data-message="Dialing Extension 2404.">☎</button></div></div></div>
-      <div class="rounded-2xl bg-white p-5 shadow-sm"><h2 class="font-bold text-primary">OT readiness checklist</h2><div class="mt-4 space-y-3 text-xs"><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox" checked> Blood products reserved</label><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox" checked> PAC and anesthesia clearance</label><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox"> Consent signed</label><label class="flex items-center gap-2"><input class="check-item accent-teal" type="checkbox"> OT brief completed</label></div><p id="check-count" class="mt-4 text-[11px] font-semibold text-secondary">2 of 4 complete</p></div>
-      <div class="rounded-2xl bg-white p-5 shadow-sm"><h2 class="font-bold text-primary">Schedule notes</h2><textarea id="schedule-note" class="mt-4 h-24 w-full resize-none rounded-lg border-slate-200 bg-slate-50 p-3 text-xs focus:border-secondary focus:ring-secondary" placeholder="Add a note for the OT or OPD team..."></textarea><button id="save-note" class="action mt-3 rounded-lg bg-primary px-3 py-2 text-[11px] font-bold text-white" data-message="Schedule note saved for the clinical team.">Save note</button></div>
-    </section>
+          <div class="space-y-2.5 text-xs text-slate-200" id="who-checklist-group">
+            <label class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3 hover:border-slate-700 transition-colors cursor-pointer">
+              <span class="flex items-center gap-2.5">
+                <input type="checkbox" class="who-check h-4 w-4 rounded accent-teal cursor-pointer" checked>
+                <span><strong>Sign In:</strong> Patient Identity, Site & Consent Verified</span>
+              </span>
+              <span class="text-[10px] font-bold text-emerald-400">08:45 AM ✓</span>
+            </label>
+
+            <label class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3 hover:border-slate-700 transition-colors cursor-pointer">
+              <span class="flex items-center gap-2.5">
+                <input type="checkbox" class="who-check h-4 w-4 rounded accent-teal cursor-pointer" checked>
+                <span><strong>Anesthesia Check:</strong> Machine, Suction & Airway Clear</span>
+              </span>
+              <span class="text-[10px] font-bold text-emerald-400">09:00 AM ✓</span>
+            </label>
+
+            <label class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3 hover:border-slate-700 transition-colors cursor-pointer">
+              <span class="flex items-center gap-2.5">
+                <input type="checkbox" class="who-check h-4 w-4 rounded accent-teal cursor-pointer" checked>
+                <span><strong>Time Out:</strong> Team introduction & Antibiotic Prophylaxis</span>
+              </span>
+              <span class="text-[10px] font-bold text-emerald-400">09:20 AM ✓</span>
+            </label>
+
+            <label class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3 hover:border-slate-700 transition-colors cursor-pointer">
+              <span class="flex items-center gap-2.5">
+                <input type="checkbox" class="who-check h-4 w-4 rounded accent-teal cursor-pointer">
+                <span><strong>Sign Out:</strong> Instrument, Sponge & Needle Counts Complete</span>
+              </span>
+              <span class="text-[10px] font-bold text-slate-500">Pending Closure</span>
+            </label>
+
+            <label class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3 hover:border-slate-700 transition-colors cursor-pointer">
+              <span class="flex items-center gap-2.5">
+                <input type="checkbox" class="who-check h-4 w-4 rounded accent-teal cursor-pointer">
+                <span><strong>PACU Handover:</strong> Recovery plan & Post-op orders written</span>
+              </span>
+              <span class="text-[10px] font-bold text-slate-500">Pending Handover</span>
+            </label>
+          </div>
+
+          <div class="rounded-xl border border-teal/30 bg-teal/10 p-3 text-[11px] text-slate-300">
+            <p class="font-bold text-teal flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm">verified_user</span>
+              <span>NABH & WHO Quality Compliance Verified</span>
+            </p>
+            <p class="mt-0.5 text-slate-400">All surgical safety checklist items are recorded in the electronic hospital log with tamper-proof timestamps.</p>
+          </div>
+        </article>
+
+        <!-- Surgical Team On-Call Communications Card -->
+        <article class="reveal rounded-3xl border border-slate-800 bg-slate-850 p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-cyan-400 text-xl">medical_information</span>
+              <h2 class="text-lg font-bold text-white">Surgical Team Roster</h2>
+            </div>
+            <span class="rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-bold text-emerald-400">Shift A (08:00 - 20:00)</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-lg bg-teal/20 text-teal font-bold flex items-center justify-center text-xs">LC</div>
+                <div>
+                  <p class="font-bold text-white">Dr. Lokesh Chaudhari, MD</p>
+                  <p class="text-[10px] text-slate-400">Lead Cardiac Anesthetist • Ext 3108</p>
+                </div>
+              </div>
+              <button class="btn-dial-ext rounded-lg bg-teal/20 px-3 py-1.5 font-bold text-teal hover:bg-teal hover:text-slate-900 transition-all flex items-center gap-1" data-name="Dr. Lokesh Chaudhari" data-ext="3108">
+                <span class="material-symbols-outlined text-sm">call</span>
+                <span>Dial 3108</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-lg bg-cyan-500/20 text-cyan-300 font-bold flex items-center justify-center text-xs">AS</div>
+                <div>
+                  <p class="font-bold text-white">Dr. Aniket Shinde, MS</p>
+                  <p class="text-[10px] text-slate-400">Cardiac Senior Resident • Ext 2404</p>
+                </div>
+              </div>
+              <button class="btn-dial-ext rounded-lg bg-cyan-500/20 px-3 py-1.5 font-bold text-cyan-300 hover:bg-cyan-400 hover:text-slate-900 transition-all flex items-center gap-1" data-name="Dr. Aniket Shinde" data-ext="2404">
+                <span class="material-symbols-outlined text-sm">call</span>
+                <span>Dial 2404</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-3">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-lg bg-secondary/30 text-cyan-200 font-bold flex items-center justify-center text-xs">AK</div>
+                <div>
+                  <p class="font-bold text-white">Mr. Amit Kulkarni</p>
+                  <p class="text-[10px] text-slate-400">Chief Perfusionist • Ext 4112</p>
+                </div>
+              </div>
+              <button class="btn-dial-ext rounded-lg bg-secondary/30 px-3 py-1.5 font-bold text-cyan-200 hover:bg-secondary hover:text-white transition-all flex items-center gap-1" data-name="Mr. Amit Kulkarni" data-ext="4112">
+                <span class="material-symbols-outlined text-sm">call</span>
+                <span>Dial 4112</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
   </main>
-  <div id="toast" class="toast fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-xl" role="status"></div>
+
+  <!-- Add Case Modal (Backdrop Blur) -->
+  <div id="modal-add-case" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md transition-all">
+    <div class="w-full max-w-lg rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-teal text-xl">medical_services</span>
+          <h3 class="text-lg font-bold text-white">Schedule New Surgical Case</h3>
+        </div>
+        <button id="btn-close-modal" class="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="form-new-case" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Patient Name</label>
+          <input type="text" required placeholder="e.g. Ramesh Kadam" class="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-850 px-3.5 py-2 text-xs text-white focus:border-teal focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Age / Gender</label>
+            <input type="text" required placeholder="e.g. 62y / Male" class="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-850 px-3.5 py-2 text-xs text-white focus:border-teal focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">MRN Number</label>
+            <input type="text" required placeholder="MRN-AAH-2023-XXXX" class="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-850 px-3.5 py-2 text-xs text-white focus:border-teal focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Surgical Procedure</label>
+          <select class="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-850 px-3.5 py-2 text-xs text-white focus:border-teal focus:outline-none">
+            <option>Coronary Artery Bypass Graft (CABG)</option>
+            <option>Aortic Valve Replacement (AVR)</option>
+            <option>Mitral Valve Repair (MVr)</option>
+            <option>Thoracoscopic Decortication</option>
+            <option>Vascular Peripheral Bypass</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Assigned OT</label>
+            <select class="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-850 px-3.5 py-2 text-xs text-white focus:border-teal focus:outline-none">
+              <option>OT-1 (Cardiac Cleanroom)</option>
+              <option>OT-2 (Hybrid Cardio Suite)</option>
+              <option>OT-3 (General Thoracic)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Urgency Level</label>
+            <select class="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-850 px-3.5 py-2 text-xs text-white focus:border-teal focus:outline-none">
+              <option>Elective Case</option>
+              <option>Urgent (Within 24h)</option>
+              <option>STAT Emergency</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 border-t border-slate-800 pt-4">
+          <button type="button" id="btn-cancel-modal" class="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="rounded-xl bg-gradient-to-r from-teal to-secondary px-5 py-2 text-xs font-bold text-white shadow-lg hover:opacity-95">Confirm Case</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interactive Floating Toast Notification -->
+  <div id="toast" class="toast-anim fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 items-center gap-3 rounded-2xl border border-slate-700 bg-slate-850 px-5 py-3.5 text-sm font-semibold text-white shadow-2xl backdrop-blur-lg" role="status">
+    <span class="material-symbols-outlined text-teal text-xl">info</span>
+    <span id="toast-text">Operation completed.</span>
+  </div>
+
+  <!-- Audio Chime Synthesizer & Client Logic -->
   <script>
     (() => {
+      // 1. Web Audio API Chime Synthesizer
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function playClinicalChime(type = 'success') {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'call') {
+          // Two-tone hospital chime (C5 -> E5)
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15); // E5
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+          osc.start(now);
+          osc.stop(now + 0.6);
+        } else if (type === 'emergency') {
+          // Rapid alert tone
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(880, now); // A5
+          osc.frequency.setValueAtTime(740, now + 0.1);
+          osc.frequency.setValueAtTime(880, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else {
+          // Subtle soft confirmation chime
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now); // D5
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.12); // A5
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        }
+      }
+
+      // 2. Toast Notification Function
       const toast = document.getElementById('toast');
-      const notify = message => { toast.textContent = message; toast.classList.remove('hidden'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 2800); };
-      document.querySelectorAll('.action').forEach(button => button.addEventListener('click', () => notify(button.dataset.message || 'Action completed.')));
-      document.querySelectorAll('.day-btn').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.day-btn').forEach(item => item.classList.remove('bg-primary', 'text-white')); button.classList.add('bg-primary', 'text-white'); notify(`${button.dataset.day} schedule loaded.`); }));
-      const filter = document.getElementById('opd-filter');
-      filter.addEventListener('change', () => document.querySelectorAll('.opd-item').forEach(item => item.classList.toggle('hidden', filter.value !== 'all' && item.dataset.status !== filter.value)));
-      const checkCount = document.getElementById('check-count');
-      document.querySelectorAll('.check-item').forEach(item => item.addEventListener('change', () => { const total = document.querySelectorAll('.check-item').length; const complete = document.querySelectorAll('.check-item:checked').length; checkCount.textContent = `${complete} of ${total} complete`; }));
+      const toastText = document.getElementById('toast-text');
+      let toastTimeout = null;
+
+      function notify(message, type = 'success') {
+        playClinicalChime(type);
+        toastText.textContent = message;
+        toast.classList.remove('hidden');
+        toast.classList.add('flex');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toast.classList.add('hidden');
+          toast.classList.remove('flex');
+        }, 3200);
+      }
+
+      // 3. Live Synchronized Clock
+      function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+        const clockEl = document.getElementById('live-ot-clock');
+        if (clockEl) {
+          clockEl.textContent = `${hours}:${minutes}:${seconds} ${ampm} IST`;
+        }
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // 4. Scrubber Stepper Interaction
+      const stageButtons = document.querySelectorAll('.stage-step-btn');
+      const stageTitle = document.getElementById('stage-detail-title');
+      const stageDesc = document.getElementById('stage-detail-desc');
+      const timelineBadge = document.getElementById('timeline-step-badge');
+      let currentStage = 3;
+
+      stageButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          stageButtons.forEach(b => {
+            b.classList.remove('border-teal', 'bg-teal/20', 'ring-4', 'ring-teal/20');
+            b.classList.add('border-slate-800', 'bg-slate-900/60');
+          });
+          btn.classList.add('border-teal', 'bg-teal/20', 'ring-4', 'ring-teal/20');
+          btn.classList.remove('border-slate-800', 'bg-slate-900/60');
+
+          currentStage = parseInt(btn.dataset.stage);
+          stageTitle.textContent = btn.dataset.title;
+          stageDesc.textContent = btn.dataset.desc;
+          timelineBadge.textContent = `Stage ${currentStage} of 5`;
+          notify(`Surgical timeline shifted to Stage ${currentStage}`);
+        });
+      });
+
+      document.getElementById('btn-scrubber-advance')?.addEventListener('click', () => {
+        if (currentStage < 5) {
+          currentStage++;
+          const nextBtn = document.querySelector(`.stage-step-btn[data-stage="${currentStage}"]`);
+          if (nextBtn) nextBtn.click();
+        } else {
+          notify('Case #CABG-0814 ready for PACU Extubation & Recovery handover.');
+        }
+      });
+
+      // 5. Patient Calling & Tele-OPD Buttons
+      document.querySelectorAll('.btn-call-patient').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.patient;
+          const token = btn.dataset.token;
+          notify(`Token #${token} (${name}) chime broadcasted to OPD Waiting Lounge.`, 'call');
+        });
+      });
+
+      document.querySelectorAll('.btn-join-tele').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.patient;
+          notify(`Launching encrypted WebRTC tele-consultation room for ${name}...`);
+        });
+      });
+
+      document.querySelectorAll('.btn-view-summary').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.patient;
+          notify(`Opening signed discharge and surgical clearance summary for ${name}.`);
+        });
+      });
+
+      document.querySelectorAll('.btn-dial-ext').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.name;
+          const ext = btn.dataset.ext;
+          notify(`Dialing Ext ${ext} (${name}) on hospital intercom...`, 'call');
+        });
+      });
+
+      document.querySelectorAll('.btn-ot-detail').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const caseName = btn.dataset.case;
+          notify(`Loading high-resolution telemetry & room sensor feeds for ${caseName}...`);
+        });
+      });
+
+      // 6. OPD Search and Filter
+      const searchInput = document.getElementById('opd-search');
+      const filterSelect = document.getElementById('opd-filter-select');
+      const opdCards = document.querySelectorAll('.opd-card');
+
+      function filterOPD() {
+        const query = searchInput.value.toLowerCase().trim();
+        const filterVal = filterSelect.value;
+
+        opdCards.forEach(card => {
+          const name = (card.dataset.name || '').toLowerCase();
+          const mrn = (card.dataset.mrn || '').toLowerCase();
+          const status = card.dataset.status;
+
+          const matchesSearch = !query || name.includes(query) || mrn.includes(query);
+          const matchesFilter = filterVal === 'all' || status === filterVal;
+
+          if (matchesSearch && matchesFilter) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      }
+
+      searchInput?.addEventListener('input', filterOPD);
+      filterSelect?.addEventListener('change', filterOPD);
+
+      // 7. WHO Checklist Progress Counter
+      const whoChecks = document.querySelectorAll('.who-check');
+      const whoStatusBadge = document.getElementById('who-status-badge');
+
+      whoChecks.forEach(check => {
+        check.addEventListener('change', () => {
+          const total = whoChecks.length;
+          const checked = document.querySelectorAll('.who-check:checked').length;
+          whoStatusBadge.textContent = `${checked} of ${total} Complete`;
+          if (checked === total) {
+            whoStatusBadge.className = 'rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-bold text-emerald-400';
+            notify('WHO Surgical Safety Checklist 100% verified & signed!');
+          } else {
+            whoStatusBadge.className = 'rounded-full bg-teal/20 px-2.5 py-1 text-[10px] font-bold text-teal';
+          }
+        });
+      });
+
+      // 8. Day Tabs
+      document.querySelectorAll('.day-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.day-tab').forEach(t => {
+            t.classList.remove('bg-gradient-to-r', 'from-secondary', 'to-teal', 'text-white', 'shadow');
+            t.classList.add('text-slate-400');
+          });
+          tab.classList.add('bg-gradient-to-r', 'from-secondary', 'to-teal', 'text-white', 'shadow');
+          tab.classList.remove('text-slate-400');
+          notify(`Loaded surgical theatre roster for ${tab.dataset.day}.`);
+        });
+      });
+
+      // 9. Sync & Emergency Stat Buttons
+      document.getElementById('btn-sync-all')?.addEventListener('click', () => {
+        notify('Synchronizing OT suites, laminar sensors, and OPD waiting lounge...');
+      });
+
+      document.getElementById('btn-emergency-stat')?.addEventListener('click', () => {
+        notify('EMERGENCY OT ALERT: Level 3 Trauma / Cardiac team paged.', 'emergency');
+      });
+
+      // 10. Modal Add Case
+      const modal = document.getElementById('modal-add-case');
+      const btnAddCase = document.getElementById('btn-add-case');
+      const btnCloseModal = document.getElementById('btn-close-modal');
+      const btnCancelModal = document.getElementById('btn-cancel-modal');
+      const formNewCase = document.getElementById('form-new-case');
+
+      function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      btnAddCase?.addEventListener('click', openModal);
+      btnCloseModal?.addEventListener('click', closeModal);
+      btnCancelModal?.addEventListener('click', closeModal);
+
+      formNewCase?.addEventListener('submit', e => {
+        e.preventDefault();
+        closeModal();
+        formNewCase.reset();
+        notify('Surgical case booked and broadcast to OT Anesthesia & Perfusion teams!');
+      });
+
     })();
   </script>
 </body>
